@@ -21,4 +21,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "AInterview"
 include(":app")
- 
+include(":domain")
+include(":data")
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
