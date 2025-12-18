@@ -65,6 +65,7 @@ dependencies {
 
     // Compose
     implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
