@@ -57,6 +57,8 @@ android {
 }
 
 dependencies {
+    implementation(projects.domain)
+    implementation(projects.data)
 
     // Android UI Core
     implementation(libs.androidx.core.ktx)
@@ -78,6 +80,7 @@ dependencies {
     implementation(libs.orbit.core)
     implementation(libs.orbit.compose)
     implementation(libs.orbit.viewmodel)
+    implementation(libs.navigation.compose)
 
     // Debugging
     debugImplementation(libs.androidx.ui.tooling)

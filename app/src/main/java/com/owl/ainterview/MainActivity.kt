@@ -11,19 +11,48 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.owl.ainterview.ui.nav.Screen
 import com.owl.ainterview.ui.theme.AInterviewTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContent {
             AInterviewTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
+                val navController = rememberNavController()
+
+                Scaffold(
+                    modifier = Modifier.fillMaxSize()
+                ) { innerPadding ->
+                    NavHost(
+                        navController = navController,
+                        startDestination = Screen.Home.route,
                         modifier = Modifier.padding(innerPadding)
-                    )
+                    ) {
+                        // 1. Home Screen
+                        composable(Screen.Home.route) {
+                            // Пока заглушки, чтобы проверить навигацию
+                            PlaceholderScreen("Home Screen", onClick = { navController.navigate(Screen.Setup.route) })
+                        }
+
+                        // 2. Setup Screen
+                        composable(Screen.Setup.route) {
+                            PlaceholderScreen("Setup Screen", onClick = { navController.navigate(Screen.Session.route) })
+                        }
+
+                        // 3. Session Screen
+                        composable(Screen.Session.route) {
+                            PlaceholderScreen("Session Screen", onClick = { navController.navigate(Screen.Report.route) })
+                        }
+
+                        // 4. Report Screen
+                        composable(Screen.Report.route) {
+                            PlaceholderScreen("Report Screen", onClick = { navController.popBackStack(Screen.Home.route, false) })
+                        }
+                    }
                 }
             }
         }
@@ -31,17 +60,8 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    AInterviewTheme {
-        Greeting("Android")
+fun PlaceholderScreen(title: String, onClick: () -> Unit) {
+    androidx.compose.material3.Button(onClick = onClick) {
+        Text("Current: $title. Go Next ->")
     }
 }

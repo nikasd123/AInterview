@@ -21,6 +21,7 @@ coroutines = "1.10.2"
 
 # AI
 googleAi = "0.9.0"
+navigationCompose = "2.9.6"
 
 [libraries]
 # Android Core
@@ -60,6 +61,7 @@ kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-cor
 
 #Serialization
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serialization" }
+navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 
 [plugins]
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
