@@ -9,7 +9,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.aiinterviewer.data"
+    namespace = "com.owl.ainterview"
     compileSdk = 36
 
     defaultConfig {
