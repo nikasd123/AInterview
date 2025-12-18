@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kotlinAndroid)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.kotlinSerialization)
 }
 
 android {
@@ -35,14 +36,15 @@ dependencies {
     // Room Database
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
-    ksp(libs.androidx.room.compiler) // Генерация кода Room
+    ksp(libs.androidx.room.compiler)
 
     // Google AI (Gemini)
     implementation(libs.google.generativeai)
 
-    // Koin for Android (инжекция Context)
+    // Koin for Android
     implementation(libs.koin.android)
 
     // Coroutines
     implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.serialization.json)
 }
