@@ -3,6 +3,7 @@ package com.owl.data.service
 import com.google.ai.client.generativeai.GenerativeModel
 import com.google.ai.client.generativeai.type.generationConfig
 import com.owl.data.network.model.EvaluationDto
+import com.owl.data.network.model.NetworkQuestionDto
 import com.owl.data.network.model.QuestionDto
 import com.owl.domain.common.Resource
 import com.owl.domain.model.InterviewSettings
@@ -11,6 +12,7 @@ import com.owl.domain.port.service.AiInterviewerService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
+import kotlin.collections.map
 
 class AiInterviewerServiceImpl(
     private val apiKey: String
@@ -19,7 +21,7 @@ class AiInterviewerServiceImpl(
     // Настраиваем Gemini на JSON режим
     private val generativeModel by lazy {
         GenerativeModel(
-            modelName = "gemini-1.5-flash",
+            modelName = "gemini-2.5-flash",
             apiKey = apiKey,
             generationConfig = generationConfig {
                 responseMimeType = "application/json"
@@ -36,7 +38,7 @@ class AiInterviewerServiceImpl(
     override suspend fun generateQuestions(settings: InterviewSettings): Resource<List<Question>> =
         withContext(Dispatchers.IO) {
             try {
-                // 1. Формируем жесткий промпт
+                // 1. Промпт остается тем же (обрати внимание на ключи topic/difficulty)
                 val prompt = """
                     You are a strict Senior Android Developer conducting a technical interview.
                     Generate ${settings.questionCount} interview questions about "${settings.topic.displayName}".
@@ -50,21 +52,23 @@ class AiInterviewerServiceImpl(
                         "difficulty": "${settings.difficulty.name}"
                       }
                     ]
-                    Do not add any markdown formatting (like ```json). Just raw JSON.
+                    Do not add any markdown formatting. Just raw JSON.
                 """.trimIndent()
 
-                // 2. Делаем запрос
                 val response = generativeModel.generateContent(prompt)
                 val responseText = response.text ?: return@withContext Resource.Error("Empty response from AI")
 
-                // 3. Парсим и маппим в Domain
-                val dtos = jsonParser.decodeFromString<List<QuestionDto>>(responseText)
+                // 2. Парсим в ЛЕГКУЮ модель (NetworkQuestionDto)
+                val dtos = jsonParser.decodeFromString<List<NetworkQuestionDto>>(responseText)
 
+                // 3. Маппим в Domain Model и ДОБАВЛЯЕМ недостающие данные (ID, defaults)
                 val questions = dtos.map { dto ->
                     Question(
+                        id = java.util.UUID.randomUUID().toString(), // Генерируем ID здесь!
                         text = dto.text,
-                        topic = settings.topic, // Используем топик из настроек
-                        difficulty = settings.difficulty
+                        topic = settings.topic, // Берем из настроек или парсим dto.topic
+                        difficulty = settings.difficulty,
+                        // Остальные поля (userAnswer, rating...) Kotlin заполнит null'ами по умолчанию
                     )
                 }
 

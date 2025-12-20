@@ -3,12 +3,14 @@ package com.owl.domain.usecase
 import com.owl.domain.common.Resource
 import com.owl.domain.model.InterviewSession
 import com.owl.domain.model.InterviewSettings
+import com.owl.domain.port.repository.SessionRepository
 import com.owl.domain.port.service.AiInterviewerService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class GenerateQuestionsUseCase(
-    private val aiService: AiInterviewerService
+    private val aiService: AiInterviewerService,
+    private val sessionRepository: SessionRepository
 ) {
     suspend operator fun invoke(settings: InterviewSettings): Resource<InterviewSession> = withContext(
         Dispatchers.Default) {
@@ -19,6 +21,8 @@ class GenerateQuestionsUseCase(
                     settings = settings,
                     questions = result.data
                 )
+
+                sessionRepository.saveSession(session)
                 Resource.Success(session)
             }
             is Resource.Error -> {

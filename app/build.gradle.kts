@@ -64,6 +64,7 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.compose.icons.core)
 
     // Compose
     implementation(platform(libs.androidx.compose.bom))
@@ -80,7 +81,7 @@ dependencies {
     implementation(libs.orbit.core)
     implementation(libs.orbit.compose)
     implementation(libs.orbit.viewmodel)
-    implementation(libs.navigation.compose)
+    implementation(libs.androidx.navigation.compose)
 
     // Debugging
     debugImplementation(libs.androidx.ui.tooling)

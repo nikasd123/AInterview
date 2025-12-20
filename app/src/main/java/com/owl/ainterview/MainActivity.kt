@@ -15,13 +15,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.owl.ainterview.ui.nav.Screen
-import com.owl.ainterview.ui.theme.AInterviewTheme
+import com.owl.ainterview.ui.screens.setup.SetupScreen
+import com.owl.ainterview.ui.theme.AIInterviewerTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            AInterviewTheme {
+            AIInterviewerTheme {
                 val navController = rememberNavController()
 
                 Scaffold(
@@ -40,7 +41,14 @@ class MainActivity : ComponentActivity() {
 
                         // 2. Setup Screen
                         composable(Screen.Setup.route) {
-                            PlaceholderScreen("Setup Screen", onClick = { navController.navigate(Screen.Session.route) })
+                            SetupScreen(
+                                onBackClick = { navController.popBackStack() },
+                                onNavigateToSession = { sessionId ->
+                                    // Передаем ID сессии в аргументы маршрута (пока просто переход)
+                                    // Позже будет: navController.navigate("session/$sessionId")
+                                    navController.navigate(Screen.Session.route)
+                                }
+                            )
                         }
 
                         // 3. Session Screen
