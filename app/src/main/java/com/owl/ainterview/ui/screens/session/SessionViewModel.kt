@@ -26,7 +26,7 @@ class SessionViewModel(
 
     override val container = container<SessionState, SessionEffect>(SessionState())
 
-    private val sessionId: String = checkNotNull(savedStateHandle["sessionId"])
+    internal val sessionId: String = checkNotNull(savedStateHandle["sessionId"])
     private var session: InterviewSession? = null
 
     init {
@@ -179,7 +179,7 @@ class SessionViewModel(
         } else {
             // Конец игры
             reduce { state.copy(step = SessionStep.COMPLETED) }
-            postSideEffect(SessionEffect.NavigateToReport)
+            postSideEffect(SessionEffect.NavigateToReport(sessionId))
         }
     }
 

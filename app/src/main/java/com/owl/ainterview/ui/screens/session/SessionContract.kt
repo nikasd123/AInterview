@@ -28,6 +28,6 @@ data class SessionState(
 
 sealed interface SessionEffect {
     data object NavigateBack : SessionEffect
-    data object NavigateToReport : SessionEffect
+    data class NavigateToReport(val sessionId: String) : SessionEffect
     data class ShowError(val message: String) : SessionEffect
 }

@@ -67,7 +67,7 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 @Composable
 fun SessionScreen(
     onBackClick: () -> Unit,
-    onNavigateToReport: () -> Unit
+    onNavigateToReport: (String) -> Unit
 ) {
     val viewModel = koinViewModel<SessionViewModel>()
     val state by viewModel.collectAsState()
@@ -90,7 +90,7 @@ fun SessionScreen(
     viewModel.collectSideEffect { effect ->
         when(effect) {
             is SessionEffect.NavigateBack -> onBackClick()
-            is SessionEffect.NavigateToReport -> onNavigateToReport()
+            is SessionEffect.NavigateToReport -> onNavigateToReport(viewModel.sessionId)
             is SessionEffect.ShowError -> { /* Show Toast */ }
         }
     }

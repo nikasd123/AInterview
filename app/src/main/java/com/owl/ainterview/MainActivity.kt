@@ -18,6 +18,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.owl.ainterview.ui.nav.Screen
+import com.owl.ainterview.ui.screens.home.HomeScreen
+import com.owl.ainterview.ui.screens.report.ReportScreen
 import com.owl.ainterview.ui.screens.session.SessionScreen
 import com.owl.ainterview.ui.screens.setup.SetupScreen
 import com.owl.ainterview.ui.theme.AIInterviewerTheme
@@ -34,13 +36,19 @@ class MainActivity : ComponentActivity() {
                 ) { innerPadding ->
                     NavHost(
                         navController = navController,
-                        startDestination = Screen.Setup.route,
+                        startDestination = Screen.Home.route,
                         modifier = Modifier.padding(innerPadding)
                     ) {
                         // 1. Home Screen
                         composable(Screen.Home.route) {
-                            // Пока заглушки, чтобы проверить навигацию
-                            PlaceholderScreen("Home Screen", onClick = { navController.navigate(Screen.Setup.route) })
+                            HomeScreen(
+                                onNavigateToSetup = {
+                                    navController.navigate(Screen.Setup.route)
+                                },
+                                onNavigateToReport = { sessionId ->
+                                    navController.navigate("report/$sessionId")
+                                }
+                            )
                         }
 
                         // 2. Setup Screen
@@ -55,21 +63,29 @@ class MainActivity : ComponentActivity() {
 
                         // 3. Session Screen
                         composable(
-                            route = "session/{sessionId}", // Указываем аргумент в маршруте
+                            route = "session/{sessionId}",
                             arguments = listOf(navArgument("sessionId") { type = NavType.StringType })
                         ) {
                             SessionScreen(
                                 onBackClick = { navController.popBackStack() },
-                                onNavigateToReport = {
-                                    // Пока заглушка. Позже сделаем переход на ReportScreen
-                                    navController.popBackStack(Screen.Home.route, false)
+                                onNavigateToReport = { sessionId ->
+                                    navController.navigate("report/$sessionId}")
                                 }
                             )
                         }
 
                         // 4. Report Screen
-                        composable(Screen.Report.route) {
-                            PlaceholderScreen("Report Screen", onClick = { navController.popBackStack(Screen.Home.route, false) })
+                        composable(
+                            route = "report/{sessionId}",
+                            arguments = listOf(navArgument("sessionId") { type = NavType.StringType })
+                        ) {
+                            ReportScreen(
+                                onHomeClick = {
+                                    navController.navigate(Screen.Home.route) {
+                                        popUpTo(Screen.Home.route) { inclusive = true }
+                                    }
+                                }
+                            )
                         }
                     }
                 }
