@@ -6,15 +6,19 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.owl.ainterview.ui.nav.Screen
+import com.owl.ainterview.ui.screens.session.SessionScreen
 import com.owl.ainterview.ui.screens.setup.SetupScreen
 import com.owl.ainterview.ui.theme.AIInterviewerTheme
 
@@ -30,7 +34,7 @@ class MainActivity : ComponentActivity() {
                 ) { innerPadding ->
                     NavHost(
                         navController = navController,
-                        startDestination = Screen.Home.route,
+                        startDestination = Screen.Setup.route,
                         modifier = Modifier.padding(innerPadding)
                     ) {
                         // 1. Home Screen
@@ -44,16 +48,23 @@ class MainActivity : ComponentActivity() {
                             SetupScreen(
                                 onBackClick = { navController.popBackStack() },
                                 onNavigateToSession = { sessionId ->
-                                    // Передаем ID сессии в аргументы маршрута (пока просто переход)
-                                    // Позже будет: navController.navigate("session/$sessionId")
-                                    navController.navigate(Screen.Session.route)
+                                    navController.navigate("session/$sessionId")
                                 }
                             )
                         }
 
                         // 3. Session Screen
-                        composable(Screen.Session.route) {
-                            PlaceholderScreen("Session Screen", onClick = { navController.navigate(Screen.Report.route) })
+                        composable(
+                            route = "session/{sessionId}", // Указываем аргумент в маршруте
+                            arguments = listOf(navArgument("sessionId") { type = NavType.StringType })
+                        ) {
+                            SessionScreen(
+                                onBackClick = { navController.popBackStack() },
+                                onNavigateToReport = {
+                                    // Пока заглушка. Позже сделаем переход на ReportScreen
+                                    navController.popBackStack(Screen.Home.route, false)
+                                }
+                            )
                         }
 
                         // 4. Report Screen
@@ -69,7 +80,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun PlaceholderScreen(title: String, onClick: () -> Unit) {
-    androidx.compose.material3.Button(onClick = onClick) {
+    Button(onClick = onClick) {
         Text("Current: $title. Go Next ->")
     }
 }

@@ -1,5 +1,6 @@
 package com.owl.data.service
 
+import android.util.Log
 import com.google.ai.client.generativeai.GenerativeModel
 import com.google.ai.client.generativeai.type.generationConfig
 import com.owl.data.network.model.EvaluationDto
@@ -38,44 +39,53 @@ class AiInterviewerServiceImpl(
     override suspend fun generateQuestions(settings: InterviewSettings): Resource<List<Question>> =
         withContext(Dispatchers.IO) {
             try {
-                // 1. Промпт остается тем же (обрати внимание на ключи topic/difficulty)
                 val prompt = """
-                    You are a strict Senior Android Developer conducting a technical interview.
-                    Generate ${settings.questionCount} interview questions about "${settings.topic.displayName}".
-                    Difficulty level: ${settings.difficulty.name}.
-                    
-                    Return the result ONLY as a JSON Array with this exact schema:
-                    [
-                      {
-                        "text": "Question text here",
-                        "topic": "${settings.topic.name}",
-                        "difficulty": "${settings.difficulty.name}"
-                      }
-                    ]
-                    Do not add any markdown formatting. Just raw JSON.
-                """.trimIndent()
+                You are a strict Senior Android Developer conducting a technical interview.
+                Generate ${settings.questionCount} interview questions about "${settings.topic.displayName}".
+                Difficulty level: ${settings.difficulty.name}.
+                
+                Return the result ONLY as a JSON Array with this exact schema:
+                [
+                  {
+                    "text": "Question text here",
+                    "topic": "${settings.topic.name}",
+                    "difficulty": "${settings.difficulty.name}"
+                  }
+                ]
+                Do not add any markdown formatting. Just raw JSON.
+            """.trimIndent()
 
                 val response = generativeModel.generateContent(prompt)
                 val responseText = response.text ?: return@withContext Resource.Error("Empty response from AI")
 
-                // 2. Парсим в ЛЕГКУЮ модель (NetworkQuestionDto)
-                val dtos = jsonParser.decodeFromString<List<NetworkQuestionDto>>(responseText)
+                // 1. ЛОГИРОВАНИЕ (Смотри в Logcat по тегу "GeminiResp")
+                Log.d("GeminiResp", "Raw Response:\n$responseText")
 
-                // 3. Маппим в Domain Model и ДОБАВЛЯЕМ недостающие данные (ID, defaults)
+                // 2. ОЧИСТКА ОТ MARKDOWN
+                // Gemini (особенно Flash) любит добавлять ```json в начале и ``` в конце.
+                // Удаляем их вручную.
+                val cleanJson = responseText
+                    .replace("```json", "")
+                    .replace("```", "")
+                    .trim() // Убираем пробелы и переносы строк по краям
+
+                // 3. Парсим уже чистый JSON
+                val dtos = jsonParser.decodeFromString<List<NetworkQuestionDto>>(cleanJson)
+
                 val questions = dtos.map { dto ->
                     Question(
-                        id = java.util.UUID.randomUUID().toString(), // Генерируем ID здесь!
+                        id = java.util.UUID.randomUUID().toString(),
                         text = dto.text,
-                        topic = settings.topic, // Берем из настроек или парсим dto.topic
-                        difficulty = settings.difficulty,
-                        // Остальные поля (userAnswer, rating...) Kotlin заполнит null'ами по умолчанию
+                        topic = settings.topic,
+                        difficulty = settings.difficulty
                     )
                 }
 
                 Resource.Success(questions)
 
             } catch (e: Exception) {
-                e.printStackTrace()
+                // Теперь в логах ты увидишь полную ошибку
+                Log.e("GeminiResp", "Error parsing JSON", e)
                 Resource.Error("Failed to generate questions: ${e.localizedMessage}", e)
             }
         }
