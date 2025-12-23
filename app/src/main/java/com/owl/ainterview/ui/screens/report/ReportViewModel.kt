@@ -1,5 +1,6 @@
 package com.owl.ainterview.ui.screens.report
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import org.orbitmvi.orbit.viewmodel.container
@@ -19,9 +20,20 @@ class ReportViewModel(
     }
 
     private fun loadSession() = intent {
+        // Логируем, какой ID мы пытаемся найти
+        Log.d("ReportVM", "Loading session with ID: $sessionId")
+
         val session = sessionRepository.getSession(sessionId)
-        reduce {
-            state.copy(isLoading = false, session = session)
+
+        if (session == null) {
+            Log.e("ReportVM", "Session not found in DB!")
+            // Можно добавить стейт ошибки, но пока просто снимем лоадер
+            reduce { state.copy(isLoading = false, session = null) }
+        } else {
+            Log.d("ReportVM", "Session loaded successfully. Score: ${session.averageScore}")
+            reduce {
+                state.copy(isLoading = false, session = session)
+            }
         }
     }
 

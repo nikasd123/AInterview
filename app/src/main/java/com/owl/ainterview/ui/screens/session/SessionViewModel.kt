@@ -11,6 +11,8 @@ import com.owl.domain.port.repository.SessionRepository
 import com.owl.domain.port.service.AiInterviewerService
 import com.owl.domain.port.service.SpeechService
 import com.owl.domain.port.service.TtsService
+import com.owl.domain.usecase.GetSessionUseCase
+import com.owl.domain.usecase.ProcessAnswerUseCase
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.ContainerHost
@@ -18,8 +20,8 @@ import org.orbitmvi.orbit.viewmodel.container
 
 class SessionViewModel(
     savedStateHandle: SavedStateHandle,
-    private val sessionRepository: SessionRepository,
-    private val aiService: AiInterviewerService,
+    private val getSessionUseCase: GetSessionUseCase,
+    private val processAnswerUseCase: ProcessAnswerUseCase,
     private val speechService: SpeechService,
     private val ttsService: TtsService,
 ) : ViewModel(), ContainerHost<SessionState, SessionEffect> {
@@ -38,18 +40,20 @@ class SessionViewModel(
     // --- 1. Initialization ---
 
     private fun loadSession() = intent {
-        val loadedSession = sessionRepository.getSession(sessionId)
+        // Обращаемся к UseCase вместо репозитория
+        val loadedSession = getSessionUseCase(sessionId)
+
         if (loadedSession != null) {
             session = loadedSession
             reduce {
                 state.copy(
                     step = SessionStep.AI_SPEAKING,
                     totalQuestions = loadedSession.questions.size,
-                    currentQuestionIndex = 0,
-                    currentQuestion = loadedSession.questions.firstOrNull()
+                    currentQuestionIndex = 0, // Или логика поиска первого неотвеченного
+                    currentQuestion = loadedSession.questions.firstOrNull { !it.isCompleted }
+                        ?: loadedSession.questions.firstOrNull()
                 )
             }
-            // Сразу начинаем читать вопрос
             speakCurrentQuestion()
         } else {
             postSideEffect(SessionEffect.ShowError("Session not found"))
@@ -128,17 +132,17 @@ class SessionViewModel(
     // --- 4. AI Evaluation Logic ---
 
     private fun submitAnswer(answerText: String) = intent {
+        val currentSess = session ?: return@intent
         val question = state.currentQuestion ?: return@intent
 
         reduce { state.copy(step = SessionStep.PROCESSING, partialAnswer = answerText) }
 
-        when (val result = aiService.evaluateAnswer(question, answerText)) {
-            is Resource.Success -> {
-                val evaluatedQuestion = result.data
+        val result = processAnswerUseCase(currentSess, question, answerText)
 
-                // Обновляем вопрос в локальной сессии и в БД
-                // (В реальном проекте лучше делать через UseCase)
-                updateQuestionInDb(evaluatedQuestion)
+        when (result) {
+            is Resource.Success -> {
+                val (updatedSession, evaluatedQuestion) = result.data
+                session = updatedSession
 
                 reduce {
                     state.copy(
@@ -150,7 +154,7 @@ class SessionViewModel(
             }
 
             is Resource.Error -> {
-                reduce { state.copy(step = SessionStep.LISTENING) } // Вернем возможность сказать заново
+                reduce { state.copy(step = SessionStep.LISTENING) }
                 postSideEffect(SessionEffect.ShowError(result.message))
             }
 
@@ -161,12 +165,11 @@ class SessionViewModel(
     // --- 5. Navigation Logic ---
 
     fun onNextQuestion() = intent {
+        val currentSess = session ?: return@intent
         val nextIndex = state.currentQuestionIndex + 1
-        val currentSession = session ?: return@intent
 
-        if (nextIndex < currentSession.questions.size) {
-            // Следующий вопрос
-            val nextQuestion = currentSession.questions[nextIndex]
+        if (nextIndex < currentSess.questions.size) {
+            val nextQuestion = currentSess.questions[nextIndex]
             reduce {
                 state.copy(
                     step = SessionStep.AI_SPEAKING,
@@ -177,34 +180,8 @@ class SessionViewModel(
             }
             speakCurrentQuestion()
         } else {
-            // Конец игры
             reduce { state.copy(step = SessionStep.COMPLETED) }
             postSideEffect(SessionEffect.NavigateToReport(sessionId))
-        }
-    }
-
-    // Вспомогательный метод для сохранения прогресса
-    private suspend fun updateQuestionInDb(updatedQuestion: Question) {
-        val currentState = container.stateFlow.value
-
-        session?.let { current ->
-            val updatedQuestions = current.questions.toMutableList()
-            updatedQuestions[currentState.currentQuestionIndex] = updatedQuestion
-
-            // Пересчитываем средний балл
-            val completedQuestions = updatedQuestions.filter { it.isCompleted }
-            val avgScore = if (completedQuestions.isNotEmpty()) {
-                completedQuestions.sumOf { it.rating ?: 0 } / completedQuestions.size
-            } else 0
-
-            val updatedSession = current.copy(
-                questions = updatedQuestions,
-                averageScore = avgScore,
-                isFinished = currentState.currentQuestionIndex == current.questions.lastIndex
-            )
-
-            session = updatedSession
-            sessionRepository.saveSession(updatedSession)
         }
     }
 

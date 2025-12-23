@@ -14,8 +14,8 @@ val appModule = module {
     viewModel {
         SessionViewModel(
             savedStateHandle = get(),
-            sessionRepository = get(),
-            aiService = get(),
+            getSessionUseCase = get(),
+            processAnswerUseCase = get(),
             speechService = get(),
             ttsService = get()
         )
