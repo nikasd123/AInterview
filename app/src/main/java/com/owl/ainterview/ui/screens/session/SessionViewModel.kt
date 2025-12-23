@@ -13,6 +13,8 @@ import com.owl.domain.port.service.SpeechService
 import com.owl.domain.port.service.TtsService
 import com.owl.domain.usecase.GetSessionUseCase
 import com.owl.domain.usecase.ProcessAnswerUseCase
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.ContainerHost
@@ -30,14 +32,28 @@ class SessionViewModel(
 
     internal val sessionId: String = checkNotNull(savedStateHandle["sessionId"])
     private var session: InterviewSession? = null
+    private var timerJob: Job? = null
 
     init {
+        startTimer()
         loadSession()
         observeTts()
         observeSpeech()
     }
 
     // --- 1. Initialization ---
+
+    private fun startTimer() {
+        timerJob?.cancel()
+        timerJob = viewModelScope.launch {
+            while (true) {
+                delay(1000L)
+                intent {
+                    reduce { state.copy(elapsedSeconds = state.elapsedSeconds + 1) }
+                }
+            }
+        }
+    }
 
     private fun loadSession() = intent {
         // Обращаемся к UseCase вместо репозитория
@@ -108,21 +124,13 @@ class SessionViewModel(
 
                     when (speechState) {
                         is SpeechState.Speaking -> {
-                            reduce { state.copy(partialAnswer = speechState.partialText) }
+                            reduce { state.copy(partialAnswer = speechState.partialText, isMicEnabled = true) }
                         }
-
-                        is SpeechState.Result -> {
-                            // Распознавание завершено -> Отправляем на проверку
-                            submitAnswer(speechState.text)
-                        }
-
+                        is SpeechState.Result -> { submitAnswer(speechState.text) }
                         is SpeechState.Error -> {
-                            // Ошибка (например, тишина) -> Просим повторить или стопаем
-                            postSideEffect(SessionEffect.ShowError(speechState.message))
-                            // Для простоты можно остаться в LISTENING или дать кнопку Retry
+                            reduce { state.copy(isMicEnabled = false) }
                         }
-
-                        else -> {}
+                        else -> Unit
                     }
                 }
             }
@@ -185,8 +193,27 @@ class SessionViewModel(
         }
     }
 
+    fun onRepeatClicked() = intent {
+        reduce { state.copy(step = SessionStep.AI_SPEAKING) }
+        speechService.stopListening()
+        speakCurrentQuestion()
+    }
+
+    fun onCancelRecording() = intent {
+        speechService.stopListening()
+        reduce { state.copy(partialAnswer = "") }
+
+        delay(300)
+        startListening()
+    }
+
+    fun onStartRecording() = intent {
+        startListening()
+    }
+
     override fun onCleared() {
         super.onCleared()
+        timerJob?.cancel()
         ttsService.stop()
         speechService.cleanup()
     }

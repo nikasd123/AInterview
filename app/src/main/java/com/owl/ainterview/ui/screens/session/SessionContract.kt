@@ -23,7 +23,10 @@ data class SessionState(
 
     // Feedback State
     val lastRating: Int = 0,
-    val lastFeedback: String = ""
+    val lastFeedback: String = "",
+
+    //Timer
+    val elapsedSeconds: Long = 0
 )
 
 sealed interface SessionEffect {

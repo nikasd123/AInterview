@@ -23,7 +23,9 @@ class SpeechServiceImpl(
     override val speechState: StateFlow<SpeechState> = _speechState.asStateFlow()
 
     private var speechRecognizer: SpeechRecognizer? = null
-    private val speechIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
+
+    // Интент выносим в геттер или создаем каждый раз, чтобы быть уверенными в флагах
+    private val speechIntent get() = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
         putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
         putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
         putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1)
@@ -31,28 +33,35 @@ class SpeechServiceImpl(
 
     private val recognitionListener = object : RecognitionListener {
         override fun onReadyForSpeech(params: Bundle?) {
+            // Рекогнайзер готов и ждет голоса
             _speechState.value = SpeechState.Listening
         }
 
         override fun onBeginningOfSpeech() {
+            // Юзер начал говорить
             _speechState.value = SpeechState.Speaking("")
         }
 
-        override fun onRmsChanged(rmsdB: Float) {
-            // Здесь можно обновлять Flow громкости для визуалайзера
-        }
-
+        override fun onRmsChanged(rmsdB: Float) {}
         override fun onBufferReceived(buffer: ByteArray?) {}
         override fun onEndOfSpeech() {
-            // Юзер замолчал, ждем обработки
-            // Можно перевести в Loading
+            // Речь закончилась, но результаты еще обрабатываются
+            // Важно не слать Error здесь, ждем onResults
         }
 
         override fun onError(error: Int) {
+            // Игнорируем ошибку "No match" если она прилетает слишком рано,
+            // но для простоты прокидываем всё, а VM решит
             val errorMessage = mapError(error)
+
+            // Важно: если ошибка "Client side error" (5) или "Busy" (8),
+            // это часто значит рассинхрон.
+            Log.e("SpeechService", "Error: $error - $errorMessage")
+
             _speechState.value = SpeechState.Error(errorMessage)
 
-            stopListeningInternal()
+            // Сбрасываем рекогнайзер
+            cleanup()
         }
 
         override fun onResults(results: Bundle?) {
@@ -79,15 +88,22 @@ class SpeechServiceImpl(
 
     override suspend fun startListening(languageCode: String) {
         withContext(Dispatchers.Main) {
-            if (speechRecognizer == null) {
-                speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context)
-                speechRecognizer?.setRecognitionListener(recognitionListener)
-            }
+            // 1. Сбрасываем старый стейт, чтобы UI не реагировал на прошлые ошибки
+            _speechState.value = SpeechState.Listening
 
-            speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, languageCode)
+            // 2. ЖЕСТКО убиваем старый рекогнайзер.
+            // Это решает проблему "включается и сразу выключается" (ERROR_BUSY)
+            cleanup()
+
+            // 3. Создаем новый экземпляр
+            speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context)
+            speechRecognizer?.setRecognitionListener(recognitionListener)
+
+            val intent = speechIntent
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, languageCode)
 
             try {
-                speechRecognizer?.startListening(speechIntent)
+                speechRecognizer?.startListening(intent)
             } catch (e: Exception) {
                 _speechState.value = SpeechState.Error("Start failed: ${e.message}")
             }
@@ -96,20 +112,21 @@ class SpeechServiceImpl(
 
     override suspend fun stopListening() {
         withContext(Dispatchers.Main) {
-            stopListeningInternal()
-        }
-    }
-
-    private fun stopListeningInternal() {
-        try {
-            speechRecognizer?.stopListening()
-        } catch (e: Exception) {
-            Log.e("SpeechRecognizer", "$e")
+            try {
+                // Просто просим остановить запись, результаты придут в onResults
+                speechRecognizer?.stopListening()
+            } catch (e: Exception) {
+                Log.e("SpeechService", "Stop failed: $e")
+            }
         }
     }
 
     override fun cleanup() {
-        speechRecognizer?.destroy()
+        try {
+            speechRecognizer?.destroy()
+        } catch (e: Exception) {
+            // ignore
+        }
         speechRecognizer = null
     }
 
