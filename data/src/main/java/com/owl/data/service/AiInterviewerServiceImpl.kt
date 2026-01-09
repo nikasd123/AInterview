@@ -19,7 +19,6 @@ class AiInterviewerServiceImpl(
     private val apiKey: String
 ) : AiInterviewerService {
 
-    // Настраиваем Gemini на JSON режим
     private val generativeModel by lazy {
         GenerativeModel(
             modelName = "gemini-2.5-flash",
@@ -30,7 +29,6 @@ class AiInterviewerServiceImpl(
         )
     }
 
-    // JSON парсер, игнорирующий неизвестные поля (на всякий случай)
     private val jsonParser = Json {
         ignoreUnknownKeys = true
         isLenient = true
@@ -58,18 +56,13 @@ class AiInterviewerServiceImpl(
                 val response = generativeModel.generateContent(prompt)
                 val responseText = response.text ?: return@withContext Resource.Error("Empty response from AI")
 
-                // 1. ЛОГИРОВАНИЕ (Смотри в Logcat по тегу "GeminiResp")
                 Log.d("GeminiResp", "Raw Response:\n$responseText")
 
-                // 2. ОЧИСТКА ОТ MARKDOWN
-                // Gemini (особенно Flash) любит добавлять ```json в начале и ``` в конце.
-                // Удаляем их вручную.
                 val cleanJson = responseText
                     .replace("```json", "")
                     .replace("```", "")
-                    .trim() // Убираем пробелы и переносы строк по краям
+                    .trim()
 
-                // 3. Парсим уже чистый JSON
                 val dtos = jsonParser.decodeFromString<List<NetworkQuestionDto>>(cleanJson)
 
                 val questions = dtos.map { dto ->
@@ -84,7 +77,6 @@ class AiInterviewerServiceImpl(
                 Resource.Success(questions)
 
             } catch (e: Exception) {
-                // Теперь в логах ты увидишь полную ошибку
                 Log.e("GeminiResp", "Error parsing JSON", e)
                 Resource.Error("Failed to generate questions: ${e.localizedMessage}", e)
             }
@@ -115,7 +107,6 @@ class AiInterviewerServiceImpl(
 
                 val evaluation = jsonParser.decodeFromString<EvaluationDto>(responseText)
 
-                // Возвращаем обновленный вопрос с результатами
                 val ratedQuestion = question.copy(
                     userAnswerText = answer,
                     aiFeedback = evaluation.feedback + "\n\nIdeal: " + evaluation.idealAnswer,
