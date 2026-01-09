@@ -9,7 +9,7 @@ import org.koin.dsl.module
 
 val appModule = module {
     viewModel { SetupViewModel(generateQuestionsUseCase = get()) }
-    viewModel { ReportViewModel(savedStateHandle = get(), sessionRepository = get()) }
+    viewModel { ReportViewModel(savedStateHandle = get(), getReportUseCase = get()) }
     viewModel { HomeViewModel(getHomeDataUseCase = get()) }
     viewModel {
         SessionViewModel(

@@ -5,11 +5,12 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import org.orbitmvi.orbit.viewmodel.container
 import com.owl.domain.port.repository.SessionRepository
+import com.owl.domain.usecase.GetSessionUseCase
 import org.orbitmvi.orbit.ContainerHost
 
 class ReportViewModel(
     savedStateHandle: SavedStateHandle,
-    private val sessionRepository: SessionRepository
+    private val getReportUseCase: GetSessionUseCase
 ) : ViewModel(), ContainerHost<ReportState, ReportEffect> {
 
     override val container = container<ReportState, ReportEffect>(ReportState())
@@ -20,17 +21,15 @@ class ReportViewModel(
     }
 
     private fun loadSession() = intent {
-        // Логируем, какой ID мы пытаемся найти
         Log.d("ReportVM", "Loading session with ID: $sessionId")
 
-        val session = sessionRepository.getSession(sessionId)
+        val session = getReportUseCase(sessionId)
 
         if (session == null) {
-            Log.e("ReportVM", "Session not found in DB!")
-            // Можно добавить стейт ошибки, но пока просто снимем лоадер
+            Log.e("ReportVM", "Session not found via UseCase!")
             reduce { state.copy(isLoading = false, session = null) }
         } else {
-            Log.d("ReportVM", "Session loaded successfully. Score: ${session.averageScore}")
+            Log.d("ReportVM", "Session loaded. Score: ${session.averageScore}")
             reduce {
                 state.copy(isLoading = false, session = session)
             }
