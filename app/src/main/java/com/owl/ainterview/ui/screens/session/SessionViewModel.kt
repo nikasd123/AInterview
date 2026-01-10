@@ -56,7 +56,6 @@ class SessionViewModel(
     }
 
     private fun loadSession() = intent {
-        // Обращаемся к UseCase вместо репозитория
         val loadedSession = getSessionUseCase(sessionId)
 
         if (loadedSession != null) {
@@ -89,9 +88,7 @@ class SessionViewModel(
         viewModelScope.launch {
             ttsService.isSpeaking.collectLatest { isSpeaking ->
                 intent {
-                    // Если робот закончил говорить и мы были в шаге AI_SPEAKING
                     if (!isSpeaking && state.step == SessionStep.AI_SPEAKING) {
-                        // Автоматически включаем микрофон
                         startListening()
                     }
                 }
@@ -113,7 +110,6 @@ class SessionViewModel(
 
     fun onStopRecording() = intent {
         speechService.stopListening()
-        // Ответ обработается в observeSpeech -> SpeechState.Result
     }
 
     private fun observeSpeech() {

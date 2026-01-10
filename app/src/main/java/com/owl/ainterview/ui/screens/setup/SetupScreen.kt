@@ -111,7 +111,7 @@ fun SetupScreen(
             ) {
                 SectionHeader(title = "Number of Questions", icon = null)
                 Text(
-                    text = "EST: ${state.questionCount * 3} MIN", // Примерный расчет
+                    text = "EST: ${state.questionCount * 3} MIN",
                     color = TextSecondary,
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Bold
@@ -122,7 +122,7 @@ fun SetupScreen(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                listOf(3, 5, 10).forEach { count ->
+                listOf(1 /*TODO 3*/, 5, 10).forEach { count ->
                     QuestionCountCard(
                         count = count,
                         isSelected = state.questionCount == count,
