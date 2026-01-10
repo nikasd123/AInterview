@@ -2,6 +2,7 @@ package com.owl.ainterview.ui.screens.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,12 +25,15 @@ import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -40,14 +44,25 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.owl.ainterview.ui.screens.home.components.HomeHeader
+import com.owl.ainterview.ui.screens.home.components.MainStatsCard
+import com.owl.ainterview.ui.screens.home.components.SessionHistoryItem
+import com.owl.ainterview.ui.screens.home.components.SmallStatCard
+import com.owl.ainterview.ui.theme.AIInterviewerTheme
 import com.owl.ainterview.ui.theme.DarkBackground
 import com.owl.ainterview.ui.theme.NeonGreen
 import com.owl.ainterview.ui.theme.TextSecondary
+import com.owl.domain.model.Difficulty
+import com.owl.domain.model.InterviewSession
+import com.owl.domain.model.InterviewSettings
+import com.owl.domain.model.Topic
 import org.koin.androidx.compose.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
+import java.time.LocalDateTime
 
 @Composable
 fun HomeScreen(
@@ -64,11 +79,56 @@ fun HomeScreen(
         }
     }
 
+    HomeScreenContent(
+        state = state,
+        onNewInterviewClick = { viewModel.onNewInterviewClick() },
+        onSessionClick = { sessionId -> viewModel.onSessionClick(sessionId) }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun HomeScreenContent(
+    state: HomeState,
+    onNewInterviewClick: () -> Unit,
+    onSessionClick: (String) -> Unit
+) {
     Scaffold(
         containerColor = DarkBackground,
+        topBar = {
+            TopAppBar(
+                title = {},
+                navigationIcon = {
+                    Box(
+                        modifier = Modifier
+                            .padding(start = 16.dp)
+                            .size(40.dp)
+                            .clip(CircleShape)
+                            .background(Color.Gray)
+                            .border(2.dp, NeonGreen, CircleShape)
+                            .clickable { /* Обработка клика по профилю */ }
+                    )
+                },
+
+                actions = {
+                    IconButton(onClick = {}) {
+                        Icon(Icons.Default.Notifications, contentDescription = "Notifications", tint = Color.White)
+                    }
+                    IconButton(onClick = {}) {
+                        Icon(Icons.Default.Settings, contentDescription = "Settings", tint = Color.White)
+                    }
+                    Spacer(modifier = Modifier.width(8.dp))
+                },
+
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = DarkBackground,
+                    scrolledContainerColor = DarkBackground
+                )
+            )
+        },
         floatingActionButton = {
             ExtendedFloatingActionButton(
-                onClick = { viewModel.onNewInterviewClick() },
+                onClick = onNewInterviewClick,
                 containerColor = NeonGreen,
                 contentColor = Color.Black,
                 shape = RoundedCornerShape(50)
@@ -86,17 +146,14 @@ fun HomeScreen(
             contentPadding = PaddingValues(24.dp),
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
-            // 1. Header
             item {
                 HomeHeader()
             }
 
-            // 2. Main Stats
             item {
                 MainStatsCard(averageScore = state.averageScore)
             }
 
-            // 3. Grid Stats (Row of 2 items)
             item {
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                     SmallStatCard(
@@ -105,7 +162,7 @@ fun HomeScreen(
                         value = "${state.completedCount}",
                         subtext = "Total sessions",
                         icon = Icons.Default.CheckCircle,
-                        color = Color(0xFF64B5F6) // Light Blue
+                        color = Color(0xFF64B5F6)
                     )
                     SmallStatCard(
                         modifier = Modifier.weight(1f),
@@ -113,12 +170,11 @@ fun HomeScreen(
                         value = state.topSkill,
                         subtext = "Most practiced",
                         icon = Icons.Default.Star,
-                        color = Color(0xFF9575CD) // Light Purple
+                        color = Color(0xFF9575CD)
                     )
                 }
             }
 
-            // 4. Recent Sessions Title
             item {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -132,7 +188,6 @@ fun HomeScreen(
                 }
             }
 
-            // 5. List Items
             if (state.sessions.isEmpty() && !state.isLoading) {
                 item {
                     Text(
@@ -145,55 +200,60 @@ fun HomeScreen(
                 items(state.sessions) { session ->
                     SessionHistoryItem(
                         session = session,
-                        onClick = { viewModel.onSessionClick(session.id) }
+                        onClick = { onSessionClick(session.id) }
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                 }
             }
 
-            // Отступ под FAB
             item { Spacer(modifier = Modifier.height(72.dp)) }
         }
     }
 }
 
+@Preview(showBackground = true)
 @Composable
-fun HomeHeader() {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Column {
-            Text(
-                buildAnnotatedString {
-                    append("Ready to ace it, \n")
-                    withStyle(SpanStyle(color = NeonGreen, fontWeight = FontWeight.Bold)) {
-                        append("Alex?")
-                    }
-                },
-                fontSize = 28.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = Color.White,
-                lineHeight = 36.sp
-            )
-        }
+fun HomeScreenPreview() {
+    val mockSessions = listOf(
+        InterviewSession(
+            id = "1",
+            date = LocalDateTime.now(),
+            settings = InterviewSettings(
+                topic = Topic.ANDROID,
+                difficulty = Difficulty.MIDDLE,
+                questionCount = 5
+            ),
+            questions = emptyList(),
+            averageScore = 85,
+            isFinished = true
+        ),
+        InterviewSession(
+            id = "2",
+            date = LocalDateTime.now().minusDays(1),
+            settings = InterviewSettings(
+                topic = Topic.KOTLIN,
+                difficulty = Difficulty.JUNIOR,
+                questionCount = 3
+            ),
+            questions = emptyList(),
+            averageScore = 62,
+            isFinished = true
+        )
+    )
 
-        Row {
-            IconButton(onClick = {}) {
-                Icon(Icons.Default.Notifications, contentDescription = null, tint = Color.White)
-            }
-            IconButton(onClick = {}) {
-                Icon(Icons.Default.Settings, contentDescription = null, tint = Color.White)
-            }
-            // Avatar (Placeholder)
-            Box(
-                modifier = Modifier
-                    .size(40.dp)
-                    .clip(CircleShape)
-                    .background(Color.Gray)
-                    .border(2.dp, NeonGreen, CircleShape)
-            )
-        }
+    val mockState = HomeState(
+        isLoading = false,
+        sessions = mockSessions,
+        averageScore = 78,
+        completedCount = 12,
+        topSkill = "System Design"
+    )
+
+    AIInterviewerTheme {
+        HomeScreenContent(
+            state = mockState,
+            onNewInterviewClick = {},
+            onSessionClick = {}
+        )
     }
 }
