@@ -69,7 +69,7 @@ class MainActivity : ComponentActivity() {
                             SessionScreen(
                                 onBackClick = { navController.popBackStack() },
                                 onNavigateToReport = { sessionId ->
-                                    navController.navigate("report/$sessionId}")
+                                    navController.navigate("report/$sessionId")
                                 }
                             )
                         }
@@ -91,12 +91,5 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-    }
-}
-
-@Composable
-fun PlaceholderScreen(title: String, onClick: () -> Unit) {
-    Button(onClick = onClick) {
-        Text("Current: $title. Go Next ->")
     }
 }
