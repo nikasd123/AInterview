@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import org.orbitmvi.orbit.viewmodel.container
-import com.owl.domain.port.repository.SessionRepository
 import com.owl.domain.usecase.GetSessionUseCase
 import org.orbitmvi.orbit.ContainerHost
 

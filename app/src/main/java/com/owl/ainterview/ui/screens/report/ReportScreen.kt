@@ -107,7 +107,6 @@ fun ReportScreenContent(
                 contentPadding = PaddingValues(horizontal = 24.dp, vertical = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
-                // 1. Score Circle
                 item {
                     Column(
                         modifier = Modifier.fillMaxWidth(),
@@ -130,17 +129,14 @@ fun ReportScreenContent(
                     }
                 }
 
-                // 2. Feedback Summary
                 item {
                     FeedbackSummaryCard(summary = "You demonstrated strong skills in ${session.settings.topic.displayName}. Keep practicing consistent hashing and edge cases.")
                 }
 
-                // 3. Header
                 item {
                     Text("Detailed Analysis", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
                 }
 
-                // 4. Questions List
                 itemsIndexed(session.questions) { index, question ->
                     QuestionResultItem(
                         index = index + 1,

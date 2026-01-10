@@ -5,7 +5,6 @@ import com.google.ai.client.generativeai.GenerativeModel
 import com.google.ai.client.generativeai.type.generationConfig
 import com.owl.data.network.model.EvaluationDto
 import com.owl.data.network.model.NetworkQuestionDto
-import com.owl.data.network.model.QuestionDto
 import com.owl.domain.common.Resource
 import com.owl.domain.model.InterviewSettings
 import com.owl.domain.model.Question

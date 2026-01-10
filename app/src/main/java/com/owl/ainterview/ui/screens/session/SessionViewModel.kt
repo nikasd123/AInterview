@@ -5,10 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.owl.domain.common.Resource
 import com.owl.domain.model.InterviewSession
-import com.owl.domain.model.Question
 import com.owl.domain.model.SpeechState
-import com.owl.domain.port.repository.SessionRepository
-import com.owl.domain.port.service.AiInterviewerService
 import com.owl.domain.port.service.SpeechService
 import com.owl.domain.port.service.TtsService
 import com.owl.domain.usecase.GetSessionUseCase
