@@ -4,6 +4,7 @@ import android.content.Context
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
 import android.util.Log
+import com.owl.domain.model.AppLanguage
 import com.owl.domain.port.service.TtsService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,6 +18,7 @@ class TtsServiceImpl(
 
     private val _isSpeaking = MutableStateFlow(false)
     override val isSpeaking: StateFlow<Boolean> = _isSpeaking.asStateFlow()
+    private var pendingLanguage: Locale? = null
 
     private var tts: TextToSpeech? = null
     private var isInitialized = false
@@ -62,6 +64,22 @@ class TtsServiceImpl(
 
         val utteranceId = UUID.randomUUID().toString()
         tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, utteranceId)
+    }
+
+    override fun setLanguage(language: AppLanguage) {
+        if (isInitialized) {
+            applyLanguage(language.locale)
+        } else {
+            pendingLanguage = language.locale
+        }
+    }
+
+    private fun applyLanguage(locale: Locale) {
+        val result = tts?.setLanguage(locale)
+        if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+            Log.e("TTS", "Language $locale not supported")
+            tts?.language = Locale.US
+        }
     }
 
     override fun stop() {

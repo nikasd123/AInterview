@@ -6,6 +6,7 @@ import com.google.ai.client.generativeai.type.generationConfig
 import com.owl.data.network.model.EvaluationDto
 import com.owl.data.network.model.NetworkQuestionDto
 import com.owl.domain.common.Resource
+import com.owl.domain.model.AppLanguage
 import com.owl.domain.model.InterviewSettings
 import com.owl.domain.model.Question
 import com.owl.domain.port.service.AiInterviewerService
@@ -33,11 +34,18 @@ class AiInterviewerServiceImpl(
         isLenient = true
     }
 
-    override suspend fun generateQuestions(settings: InterviewSettings): Resource<List<Question>> =
+    override suspend fun generateQuestions(settings: InterviewSettings, language: AppLanguage): Resource<List<Question>> =
         withContext(Dispatchers.IO) {
             try {
+                val languageInstruction = if (language == AppLanguage.RUSSIAN) {
+                    "Conduct the interview in Russian language. ALL QUESTIONS MUST BE IN RUSSIAN."
+                } else {
+                    "Conduct the interview in English language."
+                }
+
                 val prompt = """
                 You are a strict Senior Android Developer conducting a technical interview.
+                $languageInstruction
                 Generate ${settings.questionCount} interview questions about "${settings.topic.displayName}".
                 Difficulty level: ${settings.difficulty.name}.
                 
@@ -81,11 +89,18 @@ class AiInterviewerServiceImpl(
             }
         }
 
-    override suspend fun evaluateAnswer(question: Question, answer: String): Resource<Question> =
+    override suspend fun evaluateAnswer(question: Question, answer: String, language: AppLanguage): Resource<Question> =
         withContext(Dispatchers.IO) {
             try {
+                val languageInstruction = if (language == AppLanguage.RUSSIAN) {
+                    "Provide feedback and ideal answer in Russian language."
+                } else {
+                    "Provide feedback and ideal answer in English language."
+                }
+
                 val prompt = """
                     You are a Senior Android Interviewer.
+                    $languageInstruction
                     Question: "${question.text}"
                     Topic: ${question.topic.displayName}
                     User Answer: "$answer"

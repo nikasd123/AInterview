@@ -16,6 +16,7 @@ import com.owl.ainterview.ui.nav.Screen
 import com.owl.ainterview.ui.screens.home.HomeScreen
 import com.owl.ainterview.ui.screens.report.ReportScreen
 import com.owl.ainterview.ui.screens.session.SessionScreen
+import com.owl.ainterview.ui.screens.settings.SettingsScreen
 import com.owl.ainterview.ui.screens.setup.SetupScreen
 import com.owl.ainterview.ui.theme.AIInterviewerTheme
 
@@ -40,6 +41,7 @@ class MainActivity : ComponentActivity() {
                                 onNavigateToSetup = {
                                     navController.navigate(Screen.Setup.route)
                                 },
+                                onNavigateToSettings = { navController.navigate(Screen.Settings.route) },
                                 onNavigateToReport = { sessionId ->
                                     navController.navigate("report/$sessionId")
                                 }
@@ -59,7 +61,9 @@ class MainActivity : ComponentActivity() {
                         // 3. Session Screen
                         composable(
                             route = "session/{sessionId}",
-                            arguments = listOf(navArgument("sessionId") { type = NavType.StringType })
+                            arguments = listOf(navArgument("sessionId") {
+                                type = NavType.StringType
+                            })
                         ) {
                             SessionScreen(
                                 onBackClick = { navController.popBackStack() },
@@ -72,7 +76,9 @@ class MainActivity : ComponentActivity() {
                         // 4. Report Screen
                         composable(
                             route = "report/{sessionId}",
-                            arguments = listOf(navArgument("sessionId") { type = NavType.StringType })
+                            arguments = listOf(navArgument("sessionId") {
+                                type = NavType.StringType
+                            })
                         ) {
                             ReportScreen(
                                 onHomeClick = {
@@ -80,6 +86,14 @@ class MainActivity : ComponentActivity() {
                                         popUpTo(Screen.Home.route) { inclusive = true }
                                     }
                                 }
+                            )
+                        }
+
+                        //5. Settings Screen
+                        composable(Screen.Settings.route) {
+                            SettingsScreen(
+                                onBackClick = { navController.popBackStack() },
+                                onNavigateToLanguageSelection = { Unit }
                             )
                         }
                     }

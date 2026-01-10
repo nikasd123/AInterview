@@ -40,6 +40,10 @@ class HomeViewModel(
         postSideEffect(HomeEffect.NavigateToSetup)
     }
 
+    fun onSettingsClick() = intent {
+        postSideEffect(HomeEffect.NavigateToSettings)
+    }
+
     fun onSessionClick(sessionId: String) = intent {
         postSideEffect(HomeEffect.NavigateToReport(sessionId))
     }

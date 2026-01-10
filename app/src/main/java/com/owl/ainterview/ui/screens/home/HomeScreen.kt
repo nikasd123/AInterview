@@ -63,6 +63,7 @@ import java.time.LocalDateTime
 @Composable
 fun HomeScreen(
     onNavigateToSetup: () -> Unit,
+    onNavigateToSettings: () -> Unit,
     onNavigateToReport: (String) -> Unit
 ) {
     val viewModel = koinViewModel<HomeViewModel>()
@@ -71,6 +72,7 @@ fun HomeScreen(
     viewModel.collectSideEffect { effect ->
         when(effect) {
             HomeEffect.NavigateToSetup -> onNavigateToSetup()
+            HomeEffect.NavigateToSettings -> onNavigateToSettings()
             is HomeEffect.NavigateToReport -> onNavigateToReport(effect.sessionId)
         }
     }
@@ -78,6 +80,7 @@ fun HomeScreen(
     HomeScreenContent(
         state = state,
         onNewInterviewClick = { viewModel.onNewInterviewClick() },
+        onSettingsClick = { viewModel.onSettingsClick() },
         onSessionClick = { sessionId -> viewModel.onSessionClick(sessionId) }
     )
 }
@@ -87,6 +90,7 @@ fun HomeScreen(
 fun HomeScreenContent(
     state: HomeState,
     onNewInterviewClick: () -> Unit,
+    onSettingsClick: () -> Unit,
     onSessionClick: (String) -> Unit
 ) {
     Scaffold(
@@ -110,7 +114,7 @@ fun HomeScreenContent(
                     IconButton(onClick = {}) {
                         Icon(Icons.Default.Notifications, contentDescription = "Notifications", tint = Color.White)
                     }
-                    IconButton(onClick = {}) {
+                    IconButton(onClick = onSettingsClick) {
                         Icon(Icons.Default.Settings, contentDescription = "Settings", tint = Color.White)
                     }
                     Spacer(modifier = Modifier.width(8.dp))
@@ -249,7 +253,8 @@ fun HomeScreenPreview() {
         HomeScreenContent(
             state = mockState,
             onNewInterviewClick = {},
-            onSessionClick = {}
+            onSessionClick = {},
+            onSettingsClick = {}
         )
     }
 }

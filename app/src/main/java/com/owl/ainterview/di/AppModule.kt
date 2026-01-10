@@ -3,6 +3,7 @@ package com.owl.ainterview.di
 import com.owl.ainterview.ui.screens.home.HomeViewModel
 import com.owl.ainterview.ui.screens.report.ReportViewModel
 import com.owl.ainterview.ui.screens.session.SessionViewModel
+import com.owl.ainterview.ui.screens.settings.SettingsViewModel
 import com.owl.ainterview.ui.screens.setup.SetupViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
@@ -17,7 +18,12 @@ val appModule = module {
             getSessionUseCase = get(),
             processAnswerUseCase = get(),
             speechService = get(),
-            ttsService = get()
+            ttsService = get(),
+            getCurrentLanguageUseCase = get()
         )
     }
+    viewModel { SettingsViewModel(
+        getAppLanguageUseCase = get(),
+        setAppLanguageUseCase = get()
+    ) }
 }

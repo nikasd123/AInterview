@@ -4,12 +4,14 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.owl.domain.common.Resource
+import com.owl.domain.model.AppLanguage
 import com.owl.domain.model.InterviewSession
 import com.owl.domain.model.SpeechState
 import com.owl.domain.port.service.SpeechService
 import com.owl.domain.port.service.TtsService
 import com.owl.domain.usecase.GetSessionUseCase
 import com.owl.domain.usecase.ProcessAnswerUseCase
+import com.owl.domain.usecase.language.GetCurrentLanguageUseCase
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -19,6 +21,7 @@ import org.orbitmvi.orbit.viewmodel.container
 
 class SessionViewModel(
     savedStateHandle: SavedStateHandle,
+    private val getCurrentLanguageUseCase: GetCurrentLanguageUseCase,
     private val getSessionUseCase: GetSessionUseCase,
     private val processAnswerUseCase: ProcessAnswerUseCase,
     private val speechService: SpeechService,
@@ -28,10 +31,12 @@ class SessionViewModel(
     override val container = container<SessionState, SessionEffect>(SessionState())
 
     internal val sessionId: String = checkNotNull(savedStateHandle["sessionId"])
+    private var sessionLanguage: AppLanguage = AppLanguage.ENGLISH
     private var session: InterviewSession? = null
     private var timerJob: Job? = null
 
     init {
+        initializeLanguage()
         startTimer()
         loadSession()
         observeTts()
@@ -39,6 +44,13 @@ class SessionViewModel(
     }
 
     // --- 1. Initialization ---
+
+    private fun initializeLanguage() {
+        viewModelScope.launch {
+            sessionLanguage = getCurrentLanguageUseCase()
+            ttsService.setLanguage(sessionLanguage)
+        }
+    }
 
     private fun startTimer() {
         timerJob?.cancel()
@@ -102,7 +114,7 @@ class SessionViewModel(
 
     private fun startListening() = intent {
         reduce { state.copy(step = SessionStep.LISTENING, partialAnswer = "", isMicEnabled = true) }
-        speechService.startListening()
+        speechService.startListening(language = sessionLanguage.locale.toLanguageTag())
     }
 
     fun onStopRecording() = intent {

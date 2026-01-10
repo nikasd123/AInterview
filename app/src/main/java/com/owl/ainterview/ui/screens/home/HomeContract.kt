@@ -13,5 +13,6 @@ data class HomeState(
 
 sealed interface HomeEffect {
     data object NavigateToSetup : HomeEffect
+    data object NavigateToSettings : HomeEffect
     data class NavigateToReport(val sessionId: String) : HomeEffect
 }
