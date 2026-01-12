@@ -12,6 +12,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -22,6 +23,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.owl.ainterview.ui.theme.DarkSurface
+import com.owl.ainterview.ui.theme.Dimens
+import com.owl.ainterview.ui.theme.TextPrimary
 import com.owl.ainterview.ui.theme.TextSecondary
 
 @Composable
@@ -34,23 +37,23 @@ fun SmallStatCard(
     modifier: Modifier = Modifier
 ) {
     Card(
-        colors = CardDefaults.cardColors(containerColor = DarkSurface),
-        shape = RoundedCornerShape(24.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        shape = RoundedCornerShape(Dimens.CornerMedium),
         modifier = modifier
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.padding(Dimens.PaddingStandard)) {
             Box(
                 modifier = Modifier
-                    .size(32.dp)
+                    .size(Dimens.StatIconBoxSize)
                     .background(color.copy(alpha = 0.2f), CircleShape),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(icon, contentDescription = null, tint = color, modifier = Modifier.size(18.dp))
+                Icon(icon, contentDescription = null, tint = color, modifier = Modifier.size(Dimens.StatIconSize))
             }
-            Spacer(modifier = Modifier.height(12.dp))
-            Text(value, color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold)
-            Text(title, color = TextSecondary, fontSize = 12.sp)
-            Text(subtext, color = TextSecondary, fontSize = 10.sp)
+            Spacer(modifier = Modifier.height(Dimens.SpacerMedium))
+            Text(value, color = TextPrimary, fontSize = Dimens.TextSizeHeader, fontWeight = FontWeight.Bold)
+            Text(title, color = TextSecondary, fontSize = Dimens.TextSizeSmall)
+            Text(subtext, color = TextSecondary, fontSize = Dimens.TextSizeMicro)
         }
     }
 }

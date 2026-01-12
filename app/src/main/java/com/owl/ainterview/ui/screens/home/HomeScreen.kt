@@ -28,6 +28,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -39,17 +40,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.owl.ainterview.R
 import com.owl.ainterview.ui.screens.home.components.HomeHeader
 import com.owl.ainterview.ui.screens.home.components.MainStatsCard
 import com.owl.ainterview.ui.screens.home.components.SessionHistoryItem
 import com.owl.ainterview.ui.screens.home.components.SmallStatCard
 import com.owl.ainterview.ui.theme.AIInterviewerTheme
-import com.owl.ainterview.ui.theme.DarkBackground
+import com.owl.ainterview.ui.theme.Dimens
 import com.owl.ainterview.ui.theme.NeonGreen
+import com.owl.ainterview.ui.theme.PlaceholderGray
+import com.owl.ainterview.ui.theme.StatBlue
+import com.owl.ainterview.ui.theme.StatPurple
+import com.owl.ainterview.ui.theme.TextPrimary
 import com.owl.ainterview.ui.theme.TextSecondary
 import com.owl.domain.model.Difficulty
 import com.owl.domain.model.InterviewSession
@@ -64,13 +70,13 @@ import java.time.LocalDateTime
 fun HomeScreen(
     onNavigateToSetup: () -> Unit,
     onNavigateToSettings: () -> Unit,
-    onNavigateToReport: (String) -> Unit
+    onNavigateToReport: (String) -> Unit,
 ) {
     val viewModel = koinViewModel<HomeViewModel>()
     val state by viewModel.collectAsState()
 
     viewModel.collectSideEffect { effect ->
-        when(effect) {
+        when (effect) {
             HomeEffect.NavigateToSetup -> onNavigateToSetup()
             HomeEffect.NavigateToSettings -> onNavigateToSettings()
             is HomeEffect.NavigateToReport -> onNavigateToReport(effect.sessionId)
@@ -91,38 +97,44 @@ fun HomeScreenContent(
     state: HomeState,
     onNewInterviewClick: () -> Unit,
     onSettingsClick: () -> Unit,
-    onSessionClick: (String) -> Unit
+    onSessionClick: (String) -> Unit,
 ) {
     Scaffold(
-        containerColor = DarkBackground,
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             TopAppBar(
                 title = {},
                 navigationIcon = {
                     Box(
                         modifier = Modifier
-                            .padding(start = 16.dp)
-                            .size(40.dp)
+                            .padding(start = Dimens.PaddingStandard)
+                            .size(Dimens.ProfileSize)
                             .clip(CircleShape)
-                            .background(Color.Gray)
-                            .border(2.dp, NeonGreen, CircleShape)
+                            .background(PlaceholderGray)
+                            .border(Dimens.ProfileBorder, NeonGreen, CircleShape)
                             .clickable { /* Обработка клика по профилю */ }
                     )
                 },
-
                 actions = {
                     IconButton(onClick = {}) {
-                        Icon(Icons.Default.Notifications, contentDescription = "Notifications", tint = Color.White)
+                        Icon(
+                            Icons.Default.Notifications,
+                            contentDescription = stringResource(R.string.nav_notifications),
+                            tint = TextPrimary
+                        )
                     }
                     IconButton(onClick = onSettingsClick) {
-                        Icon(Icons.Default.Settings, contentDescription = "Settings", tint = Color.White)
+                        Icon(
+                            Icons.Default.Settings,
+                            contentDescription = stringResource(R.string.nav_settings),
+                            tint = TextPrimary
+                        )
                     }
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.width(Dimens.SpacerSmall))
                 },
-
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = DarkBackground,
-                    scrolledContainerColor = DarkBackground
+                    containerColor = MaterialTheme.colorScheme.background,
+                    scrolledContainerColor = MaterialTheme.colorScheme.background
                 )
             )
         },
@@ -131,11 +143,11 @@ fun HomeScreenContent(
                 onClick = onNewInterviewClick,
                 containerColor = NeonGreen,
                 contentColor = Color.Black,
-                shape = RoundedCornerShape(50)
+                shape = RoundedCornerShape(Dimens.CornerRound)
             ) {
                 Icon(Icons.Default.PlayArrow, contentDescription = null)
-                Spacer(modifier = Modifier.width(8.dp))
-                Text("New Interview", fontWeight = FontWeight.Bold)
+                Spacer(modifier = Modifier.width(Dimens.SpacerSmall))
+                Text(stringResource(R.string.new_interview), fontWeight = FontWeight.Bold)
             }
         }
     ) { padding ->
@@ -143,8 +155,8 @@ fun HomeScreenContent(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding),
-            contentPadding = PaddingValues(24.dp),
-            verticalArrangement = Arrangement.spacedBy(24.dp)
+            contentPadding = PaddingValues(Dimens.PaddingLarge),
+            verticalArrangement = Arrangement.spacedBy(Dimens.PaddingLarge)
         ) {
             item {
                 HomeHeader()
@@ -155,22 +167,27 @@ fun HomeScreenContent(
             }
 
             item {
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(
+                        Dimens.PaddingStandard
+                    )
+                ) {
                     SmallStatCard(
                         modifier = Modifier.weight(1f),
-                        title = "Completed",
+                        title = stringResource(R.string.stat_completed),
                         value = "${state.completedCount}",
-                        subtext = "Total sessions",
+                        subtext = stringResource(R.string.stat_total_sessions),
                         icon = Icons.Default.CheckCircle,
-                        color = Color(0xFF64B5F6)
+                        color = StatBlue
                     )
                     SmallStatCard(
                         modifier = Modifier.weight(1f),
-                        title = "Top Skill",
+                        title = stringResource(R.string.stat_top_skill),
                         value = state.topSkill,
-                        subtext = "Most practiced",
+                        subtext = stringResource(R.string.stat_most_practiced),
                         icon = Icons.Default.Star,
-                        color = Color(0xFF9575CD)
+                        color = StatPurple
                     )
                 }
             }
@@ -181,9 +198,18 @@ fun HomeScreenContent(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text("Recent Sessions", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                    Text(
+                        stringResource(R.string.recent_sessions),
+                        color = TextPrimary,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = Dimens.TextSizeTitle
+                    )
                     TextButton(onClick = {}) {
-                        Text("View All", color = NeonGreen, fontSize = 12.sp)
+                        Text(
+                            stringResource(R.string.view_all),
+                            color = NeonGreen,
+                            fontSize = Dimens.TextSizeSmall
+                        )
                     }
                 }
             }
@@ -191,9 +217,9 @@ fun HomeScreenContent(
             if (state.sessions.isEmpty() && !state.isLoading) {
                 item {
                     Text(
-                        "No interviews yet. Start your first one!",
+                        stringResource(R.string.no_sessions_placeholder),
                         color = TextSecondary,
-                        modifier = Modifier.padding(top = 16.dp)
+                        modifier = Modifier.padding(top = Dimens.PaddingStandard)
                     )
                 }
             } else {
@@ -202,7 +228,7 @@ fun HomeScreenContent(
                         session = session,
                         onClick = { onSessionClick(session.id) }
                     )
-                    Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(modifier = Modifier.height(Dimens.SpacerMedium))
                 }
             }
 

@@ -6,6 +6,9 @@ import androidx.compose.ui.graphics.Color
 val NeonGreen = Color(0xFF00E676)
 val NeonGreenDark = Color(0xFF00B359)
 
+val NeonOrange = Color(0xFFFFC107)
+val NeonRed = Color(0xFFCF6679)
+
 // Backgrounds
 val DarkBackground = Color(0xFF121212)
 val DarkSurface = Color(0xFF1E1E1E)
@@ -17,3 +20,11 @@ val TextSecondary = Color(0xFF8E8E93)
 
 // Semantic
 val ErrorRed = Color(0xFFCF6679)
+
+// Dashboard Specific
+val StatBlue = Color(0xFF64B5F6)
+val StatPurple = Color(0xFF9575CD)
+val StatIconRed = Color(0xFFE57373)
+val SuccessGreenDark = Color(0xFF1B5E20)
+val ProgressTrack = Color.DarkGray
+val PlaceholderGray = Color.Gray

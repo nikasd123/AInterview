@@ -1,3 +1,24 @@
 <resources>
     <string name="app_name">AInterview</string>
+
+    <string name="nav_notifications">Notifications</string>
+    <string name="nav_settings">Settings</string>
+    <string name="new_interview">New Interview</string>
+
+    <string name="stat_completed">Completed</string>
+    <string name="stat_total_sessions">Total sessions</string>
+    <string name="stat_top_skill">Top Skill</string>
+    <string name="stat_most_practiced">Most practiced</string>
+
+    <string name="recent_sessions">Recent Sessions</string>
+    <string name="view_all">View All</string>
+    <string name="no_sessions_placeholder">No interviews yet. Start your first one!</string>
+
+    <string name="avg_score_label">Average Score</string>
+    <string name="out_of_100">/100</string>
+    <string name="growth_this_week">+5% THIS WEEK</string> <string name="home_greeting_prefix">Ready to ace it, \n</string>
+    <string name="home_greeting_name_default">Anonym?</string>
+
+    <string name="status_passed">Passed</string>
+    <string name="status_needs_work">Needs Work</string>
 </resources>
