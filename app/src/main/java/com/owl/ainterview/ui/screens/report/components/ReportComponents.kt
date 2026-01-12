@@ -7,39 +7,54 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
-import com.owl.ainterview.ui.theme.DarkSurface
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.owl.ainterview.R
 import com.owl.ainterview.ui.theme.DarkSurfaceVariant
+import com.owl.ainterview.ui.theme.Dimens
+import com.owl.ainterview.ui.theme.FeedbackBackground
+import com.owl.ainterview.ui.theme.FeedbackBorder
 import com.owl.ainterview.ui.theme.NeonGreen
+import com.owl.ainterview.ui.theme.NeonOrange
+import com.owl.ainterview.ui.theme.NeonRed
+import com.owl.ainterview.ui.theme.TextPrimary
 import com.owl.ainterview.ui.theme.TextSecondary
 import com.owl.domain.model.Question
 
@@ -48,12 +63,12 @@ import com.owl.domain.model.Question
 fun ScoreCircle(
     score: Int,
     modifier: Modifier = Modifier,
-    size: Dp = 180.dp,
-    strokeWidth: Dp = 16.dp
+    size: Dp = Dimens.ScoreCircleSize,
+    strokeWidth: Dp = Dimens.ScoreCircleStroke,
 ) {
     val animatedProgress by animateFloatAsState(
         targetValue = score / 100f,
-        animationSpec = tween(durationMillis = 1500),
+        animationSpec = tween(durationMillis = Dimens.AnimDurationLong),
         label = "score"
     )
 
@@ -80,14 +95,14 @@ fun ScoreCircle(
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
                 text = score.toString(),
-                color = Color.White,
+                color = TextPrimary,
                 fontSize = 48.sp,
                 fontWeight = FontWeight.Bold
             )
             Text(
-                text = "Total Score",
+                text = stringResource(R.string.total_score),
                 color = TextSecondary,
-                fontSize = 14.sp
+                fontSize = Dimens.TextSizeStandard
             )
         }
     }
@@ -97,21 +112,26 @@ fun ScoreCircle(
 @Composable
 fun FeedbackSummaryCard(summary: String) {
     Card(
-        colors = CardDefaults.cardColors(containerColor = DarkSurface),
-        shape = RoundedCornerShape(24.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        shape = RoundedCornerShape(Dimens.CornerMedium),
         modifier = Modifier.fillMaxWidth()
     ) {
         Column(modifier = Modifier.padding(20.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(Icons.Default.Star, contentDescription = null, tint = NeonGreen)
-                Spacer(modifier = Modifier.width(8.dp))
-                Text("AI Feedback Summary", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                Spacer(modifier = Modifier.width(Dimens.PaddingMedium))
+                Text(
+                    text = stringResource(R.string.ai_feedback_title),
+                    color = TextPrimary,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = Dimens.TextSizeTitle
+                )
             }
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(Dimens.SpacerMedium))
             Text(
-                text = summary.ifBlank { "Great job completing the session! Review the detailed analysis below to see where you can improve." },
+                text = summary.ifBlank { stringResource(R.string.feedback_default) },
                 color = TextSecondary,
-                fontSize = 14.sp,
+                fontSize = Dimens.TextSizeStandard,
                 lineHeight = 20.sp
             )
         }
@@ -124,23 +144,23 @@ fun QuestionResultItem(
     index: Int,
     question: Question,
     isExpanded: Boolean,
-    onExpandClick: () -> Unit
+    onExpandClick: () -> Unit,
 ) {
     val score = question.rating ?: 0
     val scoreColor = when {
         score >= 8 -> NeonGreen
-        score >= 5 -> Color(0xFFFFC107) // Yellow
-        else -> Color(0xFFCF6679) // Red
+        score >= 5 -> NeonOrange
+        else -> NeonRed
     }
 
     Card(
-        colors = CardDefaults.cardColors(containerColor = DarkSurface),
-        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        shape = RoundedCornerShape(Dimens.ButtonCornerRadius),
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onExpandClick)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.padding(Dimens.PaddingStandard)) {
             // Header Row
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -151,21 +171,26 @@ fun QuestionResultItem(
                     // Number Badge
                     Box(
                         modifier = Modifier
-                            .size(24.dp)
+                            .size(Dimens.BadgeSize)
                             .background(scoreColor.copy(alpha = 0.2f), CircleShape),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text(index.toString(), color = scoreColor, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                        Text(
+                            index.toString(),
+                            color = scoreColor,
+                            fontSize = Dimens.TextSizeSmall,
+                            fontWeight = FontWeight.Bold
+                        )
                     }
-                    Spacer(modifier = Modifier.width(12.dp))
+                    Spacer(modifier = Modifier.width(Dimens.SpacerMedium))
 
                     // Question Text
                     Column {
                         Text(
                             text = question.text,
-                            color = Color.White,
+                            color = TextPrimary,
                             fontWeight = FontWeight.Medium,
-                            fontSize = 14.sp,
+                            fontSize = Dimens.TextSizeStandard,
                             maxLines = if (isExpanded) Int.MAX_VALUE else 2
                         )
                         Spacer(modifier = Modifier.height(6.dp))
@@ -173,10 +198,10 @@ fun QuestionResultItem(
                         Text(
                             text = question.topic.displayName.uppercase(),
                             color = TextSecondary,
-                            fontSize = 10.sp,
+                            fontSize = Dimens.TextSizeMicro,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier
-                                .background(Color.Black, RoundedCornerShape(4.dp))
+                                .background(Color.Black, RoundedCornerShape(Dimens.PaddingSmall))
                                 .padding(horizontal = 6.dp, vertical = 2.dp)
                         )
                     }
@@ -185,15 +210,15 @@ fun QuestionResultItem(
                 // Score & Chevron
                 Column(horizontalAlignment = Alignment.End) {
                     Text(
-                        text = "$score/10",
+                        text = stringResource(R.string.question_score_format, score),
                         color = scoreColor,
                         fontWeight = FontWeight.Bold,
-                        fontSize = 14.sp
+                        fontSize = Dimens.TextSizeStandard
                     )
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(Dimens.PaddingMedium))
                     Icon(
                         imageVector = if (isExpanded) Icons.Default.KeyboardArrowDown else Icons.Default.KeyboardArrowUp,
-                        contentDescription = null,
+                        contentDescription = stringResource(R.string.cd_expand_collapse),
                         tint = TextSecondary
                     )
                 }
@@ -205,43 +230,69 @@ fun QuestionResultItem(
                 enter = fadeIn() + expandVertically(),
                 exit = fadeOut() + shrinkVertically()
             ) {
-                Column(modifier = Modifier.padding(top = 16.dp)) {
+                Column(modifier = Modifier.padding(top = Dimens.PaddingStandard)) {
                     // Divider
-                    HorizontalDivider(color = DarkSurfaceVariant, thickness = 1.dp)
-                    Spacer(modifier = Modifier.height(16.dp))
+                    HorizontalDivider(
+                        color = MaterialTheme.colorScheme.surfaceVariant,
+                        thickness = Dimens.BorderThin
+                    )
+                    Spacer(modifier = Modifier.height(Dimens.SpacerLarge))
 
                     // 1. User Answer
-                    Text("YOUR ANSWER", color = TextSecondary, fontSize = 10.sp, fontWeight = FontWeight.Bold)
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = stringResource(R.string.label_your_answer),
+                        color = TextSecondary,
+                        fontSize = Dimens.TextSizeMicro,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(modifier = Modifier.height(Dimens.PaddingMedium))
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .border(1.dp, DarkSurfaceVariant, RoundedCornerShape(8.dp))
-                            .padding(12.dp)
+                            .border(
+                                Dimens.BorderThin,
+                                MaterialTheme.colorScheme.surfaceVariant,
+                                RoundedCornerShape(Dimens.PaddingMedium)
+                            )
+                            .padding(Dimens.SpacerMedium)
                     ) {
                         Text(
-                            text = question.userAnswerText ?: "No answer recorded.",
-                            color = Color.White,
-                            fontSize = 14.sp
+                            text = question.userAnswerText
+                                ?: stringResource(R.string.label_no_answer),
+                            color = TextPrimary,
+                            fontSize = Dimens.TextSizeStandard
                         )
                     }
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(Dimens.SpacerLarge))
 
                     // 2. AI Feedback / Ideal Answer
-                    Text("AI FEEDBACK & IDEAL ANSWER", color = NeonGreen, fontSize = 10.sp, fontWeight = FontWeight.Bold)
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = stringResource(R.string.label_ai_feedback),
+                        color = NeonGreen,
+                        fontSize = Dimens.TextSizeMicro,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(modifier = Modifier.height(Dimens.PaddingMedium))
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(NeonGreen.copy(alpha = 0.1f), RoundedCornerShape(8.dp))
-                            .border(1.dp, NeonGreen.copy(alpha = 0.3f), RoundedCornerShape(8.dp))
-                            .padding(12.dp)
+                            .background(
+                                FeedbackBackground,
+                                RoundedCornerShape(Dimens.PaddingMedium)
+                            )
+                            .border(
+                                Dimens.BorderThin,
+                                FeedbackBorder,
+                                RoundedCornerShape(Dimens.PaddingMedium)
+                            )
+                            .padding(Dimens.SpacerMedium)
                     ) {
                         Text(
-                            text = question.aiFeedback ?: "No feedback available.",
-                            color = Color.White, // NeonGreen для текста может быть слишком ярким, лучше белый
-                            fontSize = 14.sp
+                            text = question.aiFeedback
+                                ?: stringResource(R.string.label_no_feedback),
+                            color = TextPrimary,
+                            fontSize = Dimens.TextSizeStandard
                         )
                     }
                 }

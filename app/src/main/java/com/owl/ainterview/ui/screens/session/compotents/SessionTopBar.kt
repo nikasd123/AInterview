@@ -26,6 +26,11 @@ import com.owl.ainterview.ui.theme.NeonGreen
 import com.owl.ainterview.ui.theme.TextSecondary
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import com.owl.ainterview.R
+import com.owl.ainterview.ui.theme.Dimens
+import com.owl.ainterview.ui.theme.RecordingDot
+import com.owl.ainterview.ui.theme.TextPrimary
 
 @Composable
 fun SessionTopBar(
@@ -37,12 +42,12 @@ fun SessionTopBar(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp),
+            .padding(Dimens.PaddingStandard),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         IconButton(onClick = onBackClick) {
-            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = Color.White)
+            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.cd_back), tint = TextPrimary)
         }
 
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -55,20 +60,20 @@ fun SessionTopBar(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(
                     modifier = Modifier
-                        .size(6.dp)
-                        .background(Color.Red, CircleShape)
+                        .size(Dimens.TimerDotSize)
+                        .background(RecordingDot, CircleShape)
                 )
                 Spacer(modifier = Modifier.width(6.dp))
                 Text(
                     text = timer,
-                    color = Color.White,
+                    color = TextPrimary,
                     fontWeight = FontWeight.SemiBold
                 )
             }
         }
 
         TextButton(onClick = onEndClick) {
-            Text("End", color = NeonGreen)
+            Text(stringResource(R.string.session_end), color = NeonGreen)
         }
     }
 }

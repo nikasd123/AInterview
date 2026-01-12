@@ -38,4 +38,34 @@ object Dimens {
     val TextSizeDisplay = 28.sp
     val TextSizeHuge = 32.sp
     val LineHeightDisplay = 36.sp
+
+    // Buttons
+    val ButtonHeightStandard = 56.dp
+    val ButtonCornerRadius = 16.dp
+
+    // Charts & Report
+    val ScoreCircleSize = 180.dp
+    val ScoreCircleStroke = 16.dp
+    val BadgeSize = 24.dp
+
+    // Borders
+    val BorderThin = 1.dp
+
+    const val AnimDurationLong = 1500
+
+    // Session Screen
+    val ProgressBarHeight = 4.dp
+    val TimerDotSize = 6.dp
+
+    val VisualizerBarWidth = 20.dp
+    val VisualizerBarHeight = 12.dp
+
+    val MicButtonSize = 72.dp
+    val MicPulseSize = 100.dp
+    val MicIconSize = 32.dp
+
+    val ProcessingBoxHeight = 200.dp
+    val FeedbackBorder = 1.dp
+
+    val HintBackgroundCorner = 8.dp
 }

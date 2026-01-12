@@ -17,7 +17,7 @@ import androidx.core.view.WindowCompat
 
 private val DarkColorScheme = darkColorScheme(
     primary = NeonGreen,
-    onPrimary = DarkBackground, // Текст на зеленой кнопке должен быть темным
+    onPrimary = DarkBackground,
     primaryContainer = DarkSurface,
     onPrimaryContainer = NeonGreen,
 
@@ -45,11 +45,9 @@ fun AIInterviewerTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            // Красим статус бар в цвет фона
             window.statusBarColor = colorScheme.background.toArgb()
             window.navigationBarColor = colorScheme.background.toArgb()
 
-            // Делаем иконки статус бара светлыми (так как фон темный)
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = false
             WindowCompat.getInsetsController(window, view).isAppearanceLightNavigationBars = false
         }
@@ -57,7 +55,7 @@ fun AIInterviewerTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography, // Убедись, что Typography.kt существует (стандартный подойдет)
+        typography = Typography,
         content = content
     )
 }

@@ -28,3 +28,12 @@ val StatIconRed = Color(0xFFE57373)
 val SuccessGreenDark = Color(0xFF1B5E20)
 val ProgressTrack = Color.DarkGray
 val PlaceholderGray = Color.Gray
+
+// Report Specific
+val SuccessText = Color(0xFF4CAF50)
+val FeedbackBackground = NeonGreen.copy(alpha = 0.1f)
+val FeedbackBorder = NeonGreen.copy(alpha = 0.3f)
+
+// Session Specific
+val RecordingDot = Color(0xFFFF0000)
+val SurfaceTransparent = Color.Black.copy(alpha = 0.3f)

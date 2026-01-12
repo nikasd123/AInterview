@@ -27,6 +27,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -38,13 +39,17 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.owl.ainterview.R
 import com.owl.ainterview.ui.theme.DarkSurface
+import com.owl.ainterview.ui.theme.Dimens
 import com.owl.ainterview.ui.theme.NeonGreen
+import com.owl.ainterview.ui.theme.TextPrimary
 import com.owl.ainterview.ui.theme.TextSecondary
 
 @Composable
@@ -83,29 +88,29 @@ fun ListeningControls(
 
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
-            text = if (isMicActive) "LISTENING" else "MIC PAUSED",
+            text = if (isMicActive) stringResource(R.string.mic_state_listening) else stringResource(R.string.mic_state_paused),
             color = if (isMicActive) NeonGreen else TextSecondary,
-            fontSize = 12.sp,
+            fontSize = Dimens.TextSizeSmall,
             fontWeight = FontWeight.Bold
         )
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(Dimens.PaddingSmall))
         Text(
-            text = if (isMicActive) "Go ahead..." else "Tap mic to resume",
-            color = Color.White,
-            fontSize = 24.sp,
+            text = if (isMicActive) stringResource(R.string.mic_hint_active) else stringResource(R.string.mic_hint_paused),
+            color = TextPrimary,
+            fontSize = Dimens.TextSizeDisplay, // 24.sp
             fontWeight = FontWeight.Bold
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(Dimens.SpacerLarge))
 
         Text(
             text = when {
-                !isMicActive && partialText.isBlank() -> "Recording stopped. Tap the mic."
-                partialText.isBlank() -> "Listening for your voice..."
+                !isMicActive && partialText.isBlank() -> stringResource(R.string.speech_placeholder_stopped)
+                partialText.isBlank() -> stringResource(R.string.speech_placeholder_listening)
                 else -> "\"$partialText\""
             },
             color = TextSecondary,
-            fontSize = 16.sp,
+            fontSize = Dimens.TextSizeLarge,
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .padding(horizontal = 32.dp)
@@ -120,7 +125,7 @@ fun ListeningControls(
             if (isMicActive) {
                 Box(
                     modifier = Modifier
-                        .size(100.dp)
+                        .size(Dimens.MicPulseSize)
                         .scale(pulseScale)
                         .background(
                             brush = Brush.radialGradient(
@@ -135,43 +140,43 @@ fun ListeningControls(
                     if (isMicActive) onStopClick() else onStartClick()
                 },
                 modifier = Modifier
-                    .size(72.dp)
-                    .shadow(elevation = 8.dp, shape = CircleShape, spotColor = NeonGreen),
+                    .size(Dimens.MicButtonSize)
+                    .shadow(elevation = Dimens.PaddingMedium, shape = CircleShape, spotColor = NeonGreen),
                 shape = CircleShape,
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = if (isMicActive) NeonGreen else DarkSurface
+                    containerColor = if (isMicActive) NeonGreen else MaterialTheme.colorScheme.surface
                 ),
                 contentPadding = PaddingValues(0.dp)
             ) {
                 Icon(
-                    imageVector = if (isMicActive) Icons.Default.Check else Icons.Default.Call,
+                    imageVector = if (isMicActive) Icons.Default.Check else Icons.Default.Call, // Call или Mic
                     contentDescription = null,
-                    tint = if (isMicActive) Color.Black else Color.White,
-                    modifier = Modifier.size(32.dp)
+                    tint = if (isMicActive) Color.Black else TextPrimary,
+                    modifier = Modifier.size(Dimens.MicIconSize)
                 )
             }
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(Dimens.PaddingLarge))
 
         Row(verticalAlignment = Alignment.CenterVertically) {
             IconButton(
                 onClick = onCancelClick,
-                modifier = Modifier.background(DarkSurface, CircleShape)
+                modifier = Modifier.background(MaterialTheme.colorScheme.surface, CircleShape)
             ) {
-                Icon(Icons.Default.Close, contentDescription = "Cancel", tint = TextSecondary)
+                Icon(Icons.Default.Close, contentDescription = stringResource(R.string.cd_cancel), tint = TextSecondary)
             }
 
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.width(Dimens.SpacerLarge))
 
             Button(
                 onClick = onStopClick,
-                colors = ButtonDefaults.buttonColors(containerColor = Color.White),
-                shape = RoundedCornerShape(50)
+                colors = ButtonDefaults.buttonColors(containerColor = TextPrimary),
+                shape = RoundedCornerShape(Dimens.CornerRound)
             ) {
                 Icon(Icons.Default.Check, contentDescription = null, tint = Color.Black)
-                Spacer(modifier = Modifier.width(8.dp))
-                Text("Stop & Submit", color = Color.Black)
+                Spacer(modifier = Modifier.width(Dimens.PaddingMedium))
+                Text(stringResource(R.string.btn_stop_submit), color = Color.Black)
             }
         }
     }

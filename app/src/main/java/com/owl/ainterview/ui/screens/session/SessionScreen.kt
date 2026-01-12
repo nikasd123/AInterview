@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -33,7 +34,9 @@ import com.owl.ainterview.ui.screens.session.compotents.ListeningControls
 import com.owl.ainterview.ui.screens.session.compotents.QuestionCard
 import com.owl.ainterview.ui.screens.session.compotents.SessionProgressBar
 import com.owl.ainterview.ui.screens.session.compotents.SessionTopBar
+import com.owl.ainterview.ui.theme.AIInterviewerTheme
 import com.owl.ainterview.ui.theme.DarkBackground
+import com.owl.ainterview.ui.theme.Dimens
 import com.owl.ainterview.ui.theme.NeonGreen
 import com.owl.domain.model.Difficulty
 import com.owl.domain.model.Question
@@ -100,7 +103,7 @@ fun SessionScreenContent(
     onNextQuestion: () -> Unit
 ) {
     Scaffold(
-        containerColor = DarkBackground,
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             SessionTopBar(
                 topicTitle = state.currentQuestion?.topic?.displayName ?: "Interview",
@@ -119,14 +122,14 @@ fun SessionScreenContent(
         ) {
             SessionProgressBar(state.currentQuestionIndex + 1, state.totalQuestions)
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(Dimens.PaddingLarge))
 
             QuestionCard(
                 text = state.currentQuestion?.text ?: "Loading...",
                 isSpeaking = state.step == SessionStep.AI_SPEAKING
             )
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(Dimens.SpacerLarge * 2)) // 32.dp
 
             AnimatedContent(
                 targetState = state.step,
@@ -150,7 +153,7 @@ fun SessionScreenContent(
                     SessionStep.PROCESSING -> Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(200.dp),
+                            .height(Dimens.ProcessingBoxHeight),
                         contentAlignment = Alignment.Center
                     ) {
                         CircularProgressIndicator(color = NeonGreen)
@@ -189,18 +192,20 @@ fun SessionScreenListeningPreview() {
         elapsedSeconds = 45
     )
 
-    SessionScreenContent(
-        state = mockState,
-        formattedTime = "00:45",
-        onBackClick = {},
-        onEndClick = {},
-        onSkipReading = {},
-        onRepeatClicked = {},
-        onStopRecording = {},
-        onCancelRecording = {},
-        onStartRecording = {},
-        onNextQuestion = {}
-    )
+    AIInterviewerTheme {
+        SessionScreenContent(
+            state = mockState,
+            formattedTime = "00:45",
+            onBackClick = {},
+            onEndClick = {},
+            onSkipReading = {},
+            onRepeatClicked = {},
+            onStopRecording = {},
+            onCancelRecording = {},
+            onStartRecording = {},
+            onNextQuestion = {}
+        )
+    }
 }
 
 @Preview(name = "Feedback State", showBackground = true)
@@ -223,16 +228,18 @@ fun SessionScreenFeedbackPreview() {
         elapsedSeconds = 120
     )
 
-    SessionScreenContent(
-        state = mockState,
-        formattedTime = "02:00",
-        onBackClick = {},
-        onEndClick = {},
-        onSkipReading = {},
-        onRepeatClicked = {},
-        onStopRecording = {},
-        onCancelRecording = {},
-        onStartRecording = {},
-        onNextQuestion = {}
-    )
+    AIInterviewerTheme{
+        SessionScreenContent(
+            state = mockState,
+            formattedTime = "02:00",
+            onBackClick = {},
+            onEndClick = {},
+            onSkipReading = {},
+            onRepeatClicked = {},
+            onStopRecording = {},
+            onCancelRecording = {},
+            onStartRecording = {},
+            onNextQuestion = {}
+        )
+    }
 }

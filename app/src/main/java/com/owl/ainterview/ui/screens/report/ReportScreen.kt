@@ -22,6 +22,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,15 +30,19 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.owl.ainterview.R
 import com.owl.ainterview.ui.screens.report.components.FeedbackSummaryCard
 import com.owl.ainterview.ui.screens.report.components.QuestionResultItem
 import com.owl.ainterview.ui.screens.report.components.ScoreCircle
-import com.owl.ainterview.ui.theme.DarkBackground
+import com.owl.ainterview.ui.theme.Dimens
 import com.owl.ainterview.ui.theme.NeonGreen
+import com.owl.ainterview.ui.theme.SuccessGreenDark
+import com.owl.ainterview.ui.theme.SuccessText
+import com.owl.ainterview.ui.theme.TextPrimary
 import com.owl.domain.model.Difficulty
 import com.owl.domain.model.InterviewSession
 import com.owl.domain.model.InterviewSettings
@@ -50,13 +55,13 @@ import java.time.LocalDateTime
 
 @Composable
 fun ReportScreen(
-    onHomeClick: () -> Unit
+    onHomeClick: () -> Unit,
 ) {
     val viewModel = koinViewModel<ReportViewModel>()
     val state by viewModel.collectAsState()
 
     viewModel.collectSideEffect { effect ->
-        when(effect) {
+        when (effect) {
             ReportEffect.NavigateHome -> onHomeClick()
         }
     }
@@ -72,10 +77,10 @@ fun ReportScreen(
 fun ReportScreenContent(
     state: ReportState,
     onFinishClick: () -> Unit,
-    onExpandClick: (String) -> Unit
+    onExpandClick: (String) -> Unit,
 ) {
     Scaffold(
-        containerColor = DarkBackground,
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             ReportTopBar(onBackClick = onFinishClick)
         },
@@ -84,12 +89,16 @@ fun ReportScreenContent(
                 onClick = onFinishClick,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp)
-                    .height(56.dp),
+                    .padding(Dimens.PaddingStandard)
+                    .height(Dimens.ButtonHeightStandard),
                 colors = ButtonDefaults.buttonColors(containerColor = NeonGreen),
-                shape = RoundedCornerShape(16.dp)
+                shape = RoundedCornerShape(Dimens.ButtonCornerRadius)
             ) {
-                Text("Finish Review", color = Color.Black, fontWeight = FontWeight.Bold)
+                Text(
+                    text = stringResource(R.string.finish_review),
+                    color = Color.Black,
+                    fontWeight = FontWeight.Bold
+                )
             }
         }
     ) { padding ->
@@ -104,26 +113,47 @@ fun ReportScreenContent(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(padding),
-                contentPadding = PaddingValues(horizontal = 24.dp, vertical = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(24.dp)
+                contentPadding = PaddingValues(
+                    horizontal = Dimens.PaddingLarge,
+                    vertical = Dimens.PaddingStandard
+                ),
+                verticalArrangement = Arrangement.spacedBy(Dimens.PaddingLarge)
             ) {
                 item {
                     Column(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text("Great Job!", color = Color.White, fontSize = 28.sp, fontWeight = FontWeight.Bold)
-                        Spacer(modifier = Modifier.height(24.dp))
+                        Text(
+                            text = stringResource(R.string.great_job),
+                            color = TextPrimary,
+                            fontSize = Dimens.TextSizeDisplay,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Spacer(modifier = Modifier.height(Dimens.PaddingLarge))
+
                         ScoreCircle(score = session.averageScore)
-                        Spacer(modifier = Modifier.height(16.dp))
+
+                        Spacer(modifier = Modifier.height(Dimens.PaddingStandard))
 
                         if (session.averageScore > 80) {
                             Box(
                                 modifier = Modifier
-                                    .background(Color(0xFF1B5E20), RoundedCornerShape(50))
-                                    .padding(horizontal = 16.dp, vertical = 6.dp)
+                                    .background(
+                                        SuccessGreenDark,
+                                        RoundedCornerShape(Dimens.CornerRound)
+                                    )
+                                    .padding(
+                                        horizontal = Dimens.PaddingStandard,
+                                        vertical = 6.dp
+                                    )
                             ) {
-                                Text("Top 10% of candidates", color = Color(0xFF4CAF50), fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                                Text(
+                                    text = stringResource(R.string.top_10_percent),
+                                    color = SuccessText,
+                                    fontSize = Dimens.TextSizeSmall,
+                                    fontWeight = FontWeight.Bold
+                                )
                             }
                         }
                     }
@@ -134,7 +164,12 @@ fun ReportScreenContent(
                 }
 
                 item {
-                    Text("Detailed Analysis", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                    Text(
+                        text = stringResource(R.string.detailed_analysis),
+                        color = TextPrimary,
+                        fontSize = Dimens.TextSizeTitle,
+                        fontWeight = FontWeight.Bold
+                    )
                 }
 
                 itemsIndexed(session.questions) { index, question ->
@@ -146,7 +181,7 @@ fun ReportScreenContent(
                     )
                 }
 
-                item { Spacer(modifier = Modifier.height(16.dp)) }
+                item { Spacer(modifier = Modifier.height(Dimens.SpacerLarge)) }
             }
         }
     }
@@ -157,16 +192,29 @@ fun ReportTopBar(onBackClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 16.dp),
+            .padding(horizontal = Dimens.PaddingStandard, vertical = Dimens.PaddingStandard),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         IconButton(onClick = onBackClick) {
-            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = Color.White)
+            Icon(
+                Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = stringResource(R.string.cd_back),
+                tint = TextPrimary
+            )
         }
-        Text("Interview Report", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+        Text(
+            text = stringResource(R.string.report_title),
+            color = TextPrimary,
+            fontWeight = FontWeight.Bold,
+            fontSize = Dimens.TextSizeTitle
+        )
         IconButton(onClick = { /* Share Logic */ }) {
-            Icon(Icons.Default.Share, contentDescription = "Share", tint = Color.White)
+            Icon(
+                Icons.Default.Share,
+                contentDescription = stringResource(R.string.cd_share),
+                tint = TextPrimary
+            )
         }
     }
 }

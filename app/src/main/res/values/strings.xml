@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">AInterview</string>
 
+    <!--    Home-->
     <string name="nav_notifications">Notifications</string>
     <string name="nav_settings">Settings</string>
     <string name="new_interview">New Interview</string>
@@ -21,4 +22,53 @@
 
     <string name="status_passed">Passed</string>
     <string name="status_needs_work">Needs Work</string>
+
+    <!--    Report-->
+    <string name="report_title">Interview Report</string>
+    <string name="finish_review">Finish Review</string>
+    <string name="great_job">Great Job!</string>
+    <string name="total_score">Total Score</string>
+    <string name="top_10_percent">Top 10% of candidates</string>
+
+    <string name="ai_feedback_title">AI Feedback Summary</string>
+    <string name="feedback_default">Great job completing the session! Review the detailed analysis below to see where you can improve.</string>
+    <string name="feedback_template">You demonstrated strong skills in %1$s. Keep practicing consistent hashing and edge cases.</string>
+
+    <string name="detailed_analysis">Detailed Analysis</string>
+    <string name="question_score_format">%1$d/10</string>
+
+    <string name="label_your_answer">YOUR ANSWER</string>
+    <string name="label_no_answer">No answer recorded.</string>
+
+    <string name="label_ai_feedback">AI FEEDBACK &amp; IDEAL ANSWER</string>
+    <string name="label_no_feedback">No feedback available.</string>
+
+    <string name="cd_back">Back</string>
+    <string name="cd_share">Share</string>
+    <string name="cd_expand_collapse">Expand or collapse details</string>
+
+    <!--    Session-->
+    <string name="session_end">End</string>
+    <string name="session_question_progress">Question %1$d of %2$d</string>
+    <string name="session_percent_completed">%1$d%% Completed</string>
+
+    <string name="session_ai_speaking">AI Speaking</string>
+    <string name="session_default_hint">Consider reliability, ordering, and connection overhead in your answer.</string>
+
+    <string name="btn_repeat">Repeat</string>
+    <string name="btn_skip_reading">Skip Reading</string>
+    <string name="btn_stop_submit">Stop &amp; Submit</string>
+    <string name="cd_cancel">Cancel</string>
+
+    <string name="mic_state_listening">LISTENING</string>
+    <string name="mic_state_paused">MIC PAUSED</string>
+    <string name="mic_hint_active">Go ahead...</string>
+    <string name="mic_hint_paused">Tap mic to resume</string>
+
+    <string name="speech_placeholder_stopped">Recording stopped. Tap the mic.</string>
+    <string name="speech_placeholder_listening">Listening for your voice...</string>
+
+    <string name="feedback_strong_answer">Strong Answer</string>
+    <string name="feedback_concepts_covered">Key concepts covered</string>
+    <string name="btn_next_question">Next Question</string>
 </resources>
