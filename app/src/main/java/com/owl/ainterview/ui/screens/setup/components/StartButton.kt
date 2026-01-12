@@ -19,9 +19,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.owl.ainterview.R
+import com.owl.ainterview.ui.theme.Dimens
 import com.owl.ainterview.ui.theme.NeonGreen
 
 @Composable
@@ -40,27 +43,27 @@ fun StartButton(
         ),
         modifier = Modifier
             .fillMaxWidth()
-            .height(56.dp)
+            .height(Dimens.ButtonHeightStandard)
             .scale(scale),
-        shape = RoundedCornerShape(16.dp)
+        shape = RoundedCornerShape(Dimens.ButtonCornerRadius)
     ) {
         if (isLoading) {
             CircularProgressIndicator(
-                modifier = Modifier.size(24.dp),
+                modifier = Modifier.size(Dimens.BadgeSize),
                 color = Color.Black,
                 strokeWidth = 2.dp
             )
         } else {
             Text(
-                text = "START INTERVIEW",
+                text = stringResource(R.string.btn_start_interview),
                 color = Color.Black,
-                fontSize = 16.sp,
+                fontSize = Dimens.TextSizeLarge,
                 fontWeight = FontWeight.Bold
             )
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(Dimens.PaddingMedium))
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowForward,
-                contentDescription = null,
+                contentDescription = stringResource(R.string.cd_start_arrow),
                 tint = Color.Black
             )
         }

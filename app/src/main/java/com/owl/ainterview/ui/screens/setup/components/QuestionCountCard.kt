@@ -15,6 +15,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -22,11 +23,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.owl.ainterview.R
 import com.owl.ainterview.ui.theme.DarkSurface
+import com.owl.ainterview.ui.theme.Dimens
 import com.owl.ainterview.ui.theme.NeonGreen
+import com.owl.ainterview.ui.theme.TextPrimary
 import com.owl.ainterview.ui.theme.TextSecondary
 
 @Composable
@@ -41,11 +46,11 @@ fun QuestionCountCard(
     Box(
         modifier = modifier
             .aspectRatio(1f)
-            .clip(RoundedCornerShape(16.dp))
-            .background(DarkSurface)
-            .border(2.dp, borderColor, RoundedCornerShape(16.dp))
+            .clip(RoundedCornerShape(Dimens.QuestionCardCorner))
+            .background(MaterialTheme.colorScheme.surface)
+            .border(Dimens.QuestionCardBorder, borderColor, RoundedCornerShape(Dimens.QuestionCardCorner))
             .clickable(onClick = onClick)
-            .padding(12.dp)
+            .padding(Dimens.QuestionCardPadding)
     ) {
         if (isSelected) {
             Icon(
@@ -54,7 +59,7 @@ fun QuestionCountCard(
                 tint = NeonGreen,
                 modifier = Modifier
                     .align(Alignment.TopEnd)
-                    .size(16.dp)
+                    .size(Dimens.QuestionCardCheckSize)
             )
         }
 
@@ -64,19 +69,22 @@ fun QuestionCountCard(
         ) {
             Text(
                 text = count.toString(),
-                color = Color.White,
-                fontSize = 24.sp,
+                color = TextPrimary,
+                fontSize = Dimens.TextSizeDisplay, // 24.sp
                 fontWeight = FontWeight.Bold
             )
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(Dimens.PaddingSmall))
             Text(
-                text = when(count) {
-                    3 -> "Short"
-                    5 -> "Standard"
-                    else -> "Extended"
-                },
+                text = stringResource(
+                    when(count) {
+                        1 -> R.string.duration_quick
+                        3 -> R.string.duration_short
+                        5 -> R.string.duration_standard
+                        else -> R.string.duration_extended
+                    }
+                ),
                 color = TextSecondary,
-                fontSize = 12.sp
+                fontSize = Dimens.TextSizeSmall
             )
         }
     }

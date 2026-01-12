@@ -14,6 +14,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,10 +22,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.owl.ainterview.R
 import com.owl.ainterview.ui.screens.setup.components.DifficultySelector
 import com.owl.ainterview.ui.screens.setup.components.QuestionCountCard
 import com.owl.ainterview.ui.screens.setup.components.SectionHeader
@@ -32,6 +35,7 @@ import com.owl.ainterview.ui.screens.setup.components.SetupTopBar
 import com.owl.ainterview.ui.screens.setup.components.StartButton
 import com.owl.ainterview.ui.screens.setup.components.TopicChip
 import com.owl.ainterview.ui.theme.DarkBackground
+import com.owl.ainterview.ui.theme.Dimens
 import com.owl.ainterview.ui.theme.TextSecondary
 import com.owl.domain.model.Difficulty
 import com.owl.domain.model.Topic
@@ -80,7 +84,7 @@ fun SetupScreenContent(
     onStartClicked: () -> Unit,
 ) {
     Scaffold(
-        containerColor = DarkBackground,
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             SetupTopBar(onBackClick)
         }
@@ -90,20 +94,20 @@ fun SetupScreenContent(
                 .fillMaxSize()
                 .padding(padding)
                 .verticalScroll(rememberScrollState())
-                .padding(horizontal = 24.dp),
-            verticalArrangement = Arrangement.spacedBy(32.dp)
+                .padding(horizontal = Dimens.PaddingLarge),
+            verticalArrangement = Arrangement.spacedBy(Dimens.PaddingLarge + Dimens.PaddingMedium)
         ) {
             Text(
-                text = "Customize your mock interview session. Select your stack, difficulty, and duration to get started.",
+                text = stringResource(R.string.setup_description),
                 color = TextSecondary,
-                fontSize = 14.sp,
+                fontSize = Dimens.TextSizeStandard,
                 lineHeight = 20.sp
             )
 
-            SectionHeader(title = "Select Topic", icon = Icons.Default.Settings)
+            SectionHeader(title = stringResource(R.string.section_topic), icon = Icons.Default.Settings)
             FlowRow(
-                horizontalArrangement = Arrangement.spacedBy(10.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp)
+                horizontalArrangement = Arrangement.spacedBy(Dimens.PaddingSmallPlus),
+                verticalArrangement = Arrangement.spacedBy(Dimens.PaddingSmallPlus)
             ) {
                 state.availableTopics.forEach { topic ->
                     TopicChip(
@@ -114,7 +118,7 @@ fun SetupScreenContent(
                 }
             }
 
-            SectionHeader(title = "Difficulty Level", icon = null)
+            SectionHeader(title = stringResource(R.string.section_difficulty), icon = null)
             DifficultySelector(
                 selected = state.selectedDifficulty,
                 onSelect = onDifficultySelected
@@ -125,20 +129,20 @@ fun SetupScreenContent(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                SectionHeader(title = "Number of Questions", icon = null)
+                SectionHeader(title = stringResource(R.string.section_question_count), icon = null)
                 Text(
-                    text = "EST: ${state.questionCount * 3} MIN",
+                    text = stringResource(R.string.est_time_format, state.questionCount * 3),
                     color = TextSecondary,
-                    fontSize = 12.sp,
+                    fontSize = Dimens.TextSizeSmall,
                     fontWeight = FontWeight.Bold
                 )
             }
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                horizontalArrangement = Arrangement.spacedBy(Dimens.PaddingMedium)
             ) {
-                listOf(1, 3, 5, 10).forEach { count -> //TODO remove 1
+                listOf(1, 3, 5, 10).forEach { count ->
                     QuestionCountCard(
                         count = count,
                         isSelected = state.questionCount == count,
@@ -148,14 +152,14 @@ fun SetupScreenContent(
                 }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(Dimens.SpacerLarge))
 
             StartButton(
                 isLoading = state.isLoading,
                 onClick = onStartClicked
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(Dimens.PaddingLarge))
         }
     }
 }

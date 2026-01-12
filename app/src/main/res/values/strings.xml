@@ -109,4 +109,22 @@
     <string name="footer_system_ready">SYSTEM READY FOR INTERVIEW</string>
     <string name="footer_copyright_1">© 2026 AI TECH INTERVIEWER. ALL RIGHTS</string>
     <string name="footer_copyright_2">RESERVED. CODED FOR PRECISION.</string>
+
+    <!--    Setup-->
+    <string name="setup_title">Interview Setup</string>
+    <string name="setup_description">Customize your mock interview session. Select your stack, difficulty, and duration to get started.</string>
+
+    <string name="section_topic">Select Topic</string>
+    <string name="section_difficulty">Difficulty Level</string>
+    <string name="section_question_count">Number of Questions</string>
+
+    <string name="est_time_format">EST: %1$d MIN</string>
+    <string name="btn_start_interview">START INTERVIEW</string>
+
+    <string name="duration_quick">Quick</string>
+    <string name="duration_short">Short</string>
+    <string name="duration_standard">Standard</string>
+    <string name="duration_extended">Extended</string>
+
+    <string name="cd_start_arrow">Start arrow</string>
 </resources>

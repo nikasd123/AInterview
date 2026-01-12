@@ -1,11 +1,14 @@
 package com.owl.ainterview.ui.theme
 
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 object Dimens {
+
     // Padding & Spacing
     val PaddingSmall = 4.dp
+    val PaddingSmallPlus = 6.dp
     val PaddingMedium = 8.dp
     val PaddingStandard = 16.dp
     val PaddingLarge = 24.dp
@@ -78,4 +81,24 @@ object Dimens {
     val SliderSteps = 2
 
     val FooterDotSize = 6.dp
+
+
+    // Setup Screen
+    val ChipCornerRadius = 12.dp
+    val ChipPaddingV = 10.dp
+    val ChipPaddingH = 16.dp
+
+    val SelectorCornerRadius = 16.dp
+    val SelectorInnerCornerRadius = 12.dp
+    val SelectorPadding = 4.dp
+    val SelectorItemPaddingV = 12.dp
+
+    val QuestionCardCorner = 16.dp
+    val QuestionCardPadding = 12.dp
+    val QuestionCardBorder = 2.dp
+    val QuestionCardCheckSize = 16.dp
+
+    val SectionIconSize = 18.dp
+    val SectionIndicatorWidth = 4.dp
+    val SectionIndicatorHeight = 16.dp
 }

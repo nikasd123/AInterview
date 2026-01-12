@@ -17,7 +17,9 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.owl.ainterview.ui.theme.Dimens
 import com.owl.ainterview.ui.theme.NeonGreen
+import com.owl.ainterview.ui.theme.TextPrimary
 
 @Composable
 fun SectionHeader(title: String, icon: ImageVector?) {
@@ -27,17 +29,17 @@ fun SectionHeader(title: String, icon: ImageVector?) {
                 imageVector = icon,
                 contentDescription = null,
                 tint = NeonGreen,
-                modifier = Modifier.size(18.dp)
+                modifier = Modifier.size(Dimens.SectionIconSize)
             )
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(Dimens.PaddingMedium))
         } else {
-            Box(modifier = Modifier.size(4.dp, 16.dp).background(NeonGreen, CircleShape))
-            Spacer(modifier = Modifier.width(8.dp))
+            Box(modifier = Modifier.size(Dimens.SectionIndicatorWidth, Dimens.SectionIndicatorHeight).background(NeonGreen, CircleShape))
+            Spacer(modifier = Modifier.width(Dimens.PaddingMedium))
         }
         Text(
             text = title,
-            color = Color.White,
-            fontSize = 18.sp,
+            color = TextPrimary,
+            fontSize = Dimens.TextSizeTitle,
             fontWeight = FontWeight.Bold
         )
     }

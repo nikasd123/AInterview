@@ -14,30 +14,34 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.owl.ainterview.R
+import com.owl.ainterview.ui.theme.Dimens
+import com.owl.ainterview.ui.theme.TextPrimary
 
 @Composable
 fun SetupTopBar(onBackClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 16.dp),
+            .padding(horizontal = Dimens.PaddingStandard, vertical = Dimens.PaddingStandard),
         verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(onClick = onBackClick) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = "Back",
-                tint = Color.White
+                contentDescription = stringResource(R.string.cd_back),
+                tint = TextPrimary
             )
         }
-        Spacer(modifier = Modifier.width(8.dp))
+        Spacer(modifier = Modifier.width(Dimens.PaddingMedium))
         Text(
-            text = "Interview Setup",
-            color = Color.White,
-            fontSize = 20.sp,
+            text = stringResource(R.string.setup_title),
+            color = TextPrimary,
+            fontSize = Dimens.TextSizeHeader,
             fontWeight = FontWeight.Bold
         )
     }

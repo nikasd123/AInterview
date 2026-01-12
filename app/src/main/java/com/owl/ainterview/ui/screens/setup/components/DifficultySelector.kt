@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -20,6 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.owl.ainterview.ui.theme.DarkSurface
+import com.owl.ainterview.ui.theme.Dimens
 import com.owl.ainterview.ui.theme.NeonGreen
 import com.owl.ainterview.ui.theme.TextSecondary
 import com.owl.domain.model.Difficulty
@@ -32,9 +34,9 @@ fun DifficultySelector(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp))
-            .background(DarkSurface)
-            .padding(4.dp),
+            .clip(RoundedCornerShape(Dimens.SelectorCornerRadius))
+            .background(MaterialTheme.colorScheme.surface)
+            .padding(Dimens.SelectorPadding),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Difficulty.entries.forEach { level ->
@@ -45,17 +47,17 @@ fun DifficultySelector(
             Box(
                 modifier = Modifier
                     .weight(1f)
-                    .clip(RoundedCornerShape(12.dp))
+                    .clip(RoundedCornerShape(Dimens.SelectorInnerCornerRadius))
                     .background(animatedBg)
                     .clickable { onSelect(level) }
-                    .padding(vertical = 12.dp),
+                    .padding(vertical = Dimens.SelectorItemPaddingV),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = level.name.lowercase().replaceFirstChar { it.uppercase() }, // Junior, Middle...
+                    text = level.name.lowercase().replaceFirstChar { it.uppercase() },
                     color = animatedText,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 14.sp
+                    fontSize = Dimens.TextSizeStandard
                 )
             }
         }
