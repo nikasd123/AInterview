@@ -1,7 +1,7 @@
 package com.owl.ainterview.ui.screens.settings
 
 import android.os.Build
-import com.owl.ainterview.BuildConfig
+import com.data.owl.ainterview.BuildConfig
 import com.owl.domain.model.AppLanguage
 
 data class SettingsState(

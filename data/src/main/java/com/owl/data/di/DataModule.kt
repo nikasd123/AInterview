@@ -1,7 +1,7 @@
 package com.owl.data.di
 
 import androidx.room.Room
-import com.owl.ainterview.BuildConfig
+import com.data.owl.ainterview.BuildConfig
 import com.owl.data.db.AppDatabase
 import com.owl.data.repository.AppSettingsRepositoryImpl
 import com.owl.data.repository.SessionRepositoryImpl
