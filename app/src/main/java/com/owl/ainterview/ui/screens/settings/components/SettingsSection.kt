@@ -8,6 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.owl.ainterview.ui.theme.Dimens
 import com.owl.ainterview.ui.theme.TextSecondary
 
 @Composable
@@ -16,9 +17,9 @@ fun SettingsSection(title: String, content: @Composable () -> Unit) {
         Text(
             text = title,
             color = TextSecondary,
-            fontSize = 12.sp,
+            fontSize = Dimens.TextSizeSmall,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(start = 8.dp, bottom = 8.dp)
+            modifier = Modifier.padding(start = Dimens.PaddingMedium, bottom = Dimens.PaddingMedium)
         )
         content()
     }

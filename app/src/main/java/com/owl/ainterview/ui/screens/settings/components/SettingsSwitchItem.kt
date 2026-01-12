@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
@@ -17,7 +18,9 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.owl.ainterview.ui.theme.DarkBackground
+import com.owl.ainterview.ui.theme.Dimens
 import com.owl.ainterview.ui.theme.NeonGreen
+import com.owl.ainterview.ui.theme.TextPrimary
 import com.owl.ainterview.ui.theme.TextSecondary
 
 @Composable
@@ -31,14 +34,14 @@ fun SettingsSwitchItem(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp),
+            .padding(Dimens.PaddingStandard),
         verticalAlignment = Alignment.CenterVertically
     ) {
         SettingsIcon(icon, if (isChecked) NeonGreen else TextSecondary)
-        Spacer(modifier = Modifier.width(16.dp))
+        Spacer(modifier = Modifier.width(Dimens.PaddingStandard))
         Column(modifier = Modifier.weight(1f)) {
-            Text(title, color = Color.White, fontSize = 16.sp)
-            Text(subtitle, color = TextSecondary, fontSize = 12.sp)
+            Text(title, color = TextPrimary, fontSize = Dimens.TextSizeLarge)
+            Text(subtitle, color = TextSecondary, fontSize = Dimens.TextSizeSmall)
         }
         Switch(
             checked = isChecked,
@@ -47,7 +50,7 @@ fun SettingsSwitchItem(
                 checkedThumbColor = Color.Black,
                 checkedTrackColor = NeonGreen,
                 uncheckedThumbColor = TextSecondary,
-                uncheckedTrackColor = DarkBackground
+                uncheckedTrackColor = MaterialTheme.colorScheme.background
             )
         )
     }

@@ -68,4 +68,14 @@ object Dimens {
     val FeedbackBorder = 1.dp
 
     val HintBackgroundCorner = 8.dp
+
+
+    // Settings
+    val SettingsIconBoxSize = 40.dp
+    val SettingsIconSize = 20.dp
+    val SettingsEndIconSize = 16.dp
+
+    val SliderSteps = 2
+
+    val FooterDotSize = 6.dp
 }

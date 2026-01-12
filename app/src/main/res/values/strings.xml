@@ -71,4 +71,42 @@
     <string name="feedback_strong_answer">Strong Answer</string>
     <string name="feedback_concepts_covered">Key concepts covered</string>
     <string name="btn_next_question">Next Question</string>
+
+    <!--    Settings-->
+    <string name="settings_title">SETTINGS</string>
+    <string name="settings_save_changes">SAVE ALL CHANGES</string>
+
+    <string name="section_interface">INTERFACE</string>
+    <string name="section_account">ACCOUNT</string>
+    <string name="section_alerts">ALERTS</string>
+    <string name="section_voice_ai">VOICE &amp; AI</string>
+    <string name="section_application">APPLICATION</string>
+
+    <string name="pref_app_language">App Language</string>
+    <string name="pref_current_lang_format">Current: %1$s</string>
+
+    <string name="pref_personal_info">Personal Information</string>
+    <string name="pref_tech_stack">Interview Tech Stack</string>
+    <string name="pref_sign_out">Sign Out</string>
+
+    <string name="pref_reminders">Interview Reminders</string>
+    <string name="pref_reminders_sub">Daily practice nudges</string>
+    <string name="pref_tech_tips">Daily Tech Tips</string>
+    <string name="pref_tech_tips_sub">Flashcards for algorithm prep</string>
+
+    <string name="pref_interviewer_voice">Interviewer Voice</string>
+    <string name="pref_voice_sub">"Modern Tech Expert (Male)"</string>
+    <string name="pref_speech_speed">Speech Speed</string>
+    <string name="pref_speed_value_format">%.1fx</string>
+    <string name="pref_speed_normal">Normal (1.0x)</string>
+
+    <string name="pref_privacy_policy">Privacy Policy</string>
+    <string name="pref_terms_service">Terms of Service</string>
+    <string name="pref_build_version">Build Version</string>
+    <string name="pref_build_sub_format">Production Release %1$s\n(Stable)</string>
+    <string name="pref_version_format">v%1$s</string>
+
+    <string name="footer_system_ready">SYSTEM READY FOR INTERVIEW</string>
+    <string name="footer_copyright_1">© 2026 AI TECH INTERVIEWER. ALL RIGHTS</string>
+    <string name="footer_copyright_2">RESERVED. CODED FOR PRECISION.</string>
 </resources>

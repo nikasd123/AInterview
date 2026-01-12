@@ -18,6 +18,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.owl.ainterview.ui.theme.Dimens
+import com.owl.ainterview.ui.theme.TextPrimary
 import com.owl.ainterview.ui.theme.TextSecondary
 
 @Composable
@@ -27,7 +29,7 @@ fun SettingsItem(
     subtitle: String? = null,
     iconColor: Color,
     iconBgColor: Color = iconColor.copy(alpha = 0.1f),
-    textColor: Color = Color.White,
+    textColor: Color = TextPrimary,
     showChevron: Boolean = true,
     onClick: () -> Unit,
     endContent: @Composable (() -> Unit)? = null
@@ -36,15 +38,15 @@ fun SettingsItem(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
-            .padding(16.dp),
+            .padding(Dimens.PaddingStandard),
         verticalAlignment = Alignment.CenterVertically
     ) {
         SettingsIcon(icon, iconColor, iconBgColor)
-        Spacer(modifier = Modifier.width(16.dp))
+        Spacer(modifier = Modifier.width(Dimens.PaddingStandard))
         Column(modifier = Modifier.weight(1f)) {
-            Text(title, color = textColor, fontSize = 16.sp)
+            Text(title, color = textColor, fontSize = Dimens.TextSizeLarge)
             if (subtitle != null) {
-                Text(subtitle, color = TextSecondary, fontSize = 12.sp, lineHeight = 16.sp)
+                Text(subtitle, color = TextSecondary, fontSize = Dimens.TextSizeSmall, lineHeight = 16.sp)
             }
         }
         if (endContent != null) {

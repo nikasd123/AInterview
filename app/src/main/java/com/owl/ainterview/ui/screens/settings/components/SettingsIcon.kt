@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import com.owl.ainterview.ui.theme.Dimens
 
 @Composable
 fun SettingsIcon(
@@ -20,10 +21,10 @@ fun SettingsIcon(
 ) {
     Box(
         modifier = Modifier
-            .size(40.dp)
+            .size(Dimens.SettingsIconBoxSize)
             .background(bgColor, CircleShape),
         contentAlignment = Alignment.Center
     ) {
-        Icon(icon, contentDescription = null, tint = color, modifier = Modifier.size(20.dp))
+        Icon(icon, contentDescription = null, tint = color, modifier = Modifier.size(Dimens.SettingsIconSize))
     }
 }

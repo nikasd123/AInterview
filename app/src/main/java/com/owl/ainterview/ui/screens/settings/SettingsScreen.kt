@@ -37,6 +37,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
@@ -48,17 +49,23 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.owl.ainterview.R
 import com.owl.ainterview.ui.screens.settings.components.SettingsCard
 import com.owl.ainterview.ui.screens.settings.components.SettingsIcon
 import com.owl.ainterview.ui.screens.settings.components.SettingsItem
 import com.owl.ainterview.ui.screens.settings.components.SettingsSection
 import com.owl.ainterview.ui.screens.settings.components.SettingsSwitchItem
-import com.owl.ainterview.ui.theme.DarkBackground
+import com.owl.ainterview.ui.theme.Dimens
 import com.owl.ainterview.ui.theme.NeonGreen
+import com.owl.ainterview.ui.theme.SettingsDivider
+import com.owl.ainterview.ui.theme.SettingsIconGreen
+import com.owl.ainterview.ui.theme.SettingsIconRed
+import com.owl.ainterview.ui.theme.SettingsIconRedBg
+import com.owl.ainterview.ui.theme.TextPrimary
 import com.owl.ainterview.ui.theme.TextSecondary
 import com.owl.domain.model.AppLanguage
 import org.koin.androidx.compose.koinViewModel
@@ -66,7 +73,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun SettingsScreen(
     onBackClick: () -> Unit,
-    onNavigateToLanguageSelection: () -> Unit
+    onNavigateToLanguageSelection: () -> Unit,
 ) {
     val viewModel = koinViewModel<SettingsViewModel>()
     val currentLanguage by viewModel.currentLanguage.collectAsState()
@@ -103,21 +110,30 @@ fun SettingsScreenContent(
     onReminderToggle: (Boolean) -> Unit,
     onTipsToggle: (Boolean) -> Unit,
     onSpeedChange: (Float) -> Unit,
-    onSaveClick: () -> Unit
+    onSaveClick: () -> Unit,
 ) {
     Scaffold(
-        containerColor = DarkBackground,
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
-                    Text("SETTINGS", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                    Text(
+                        stringResource(R.string.settings_title),
+                        color = TextPrimary,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = Dimens.TextSizeLarge
+                    )
                 },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = Color.White)
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.cd_back),
+                            tint = TextPrimary
+                        )
                     }
                 },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = DarkBackground)
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = MaterialTheme.colorScheme.background)
             )
         },
         bottomBar = {
@@ -126,12 +142,16 @@ fun SettingsScreenContent(
                 onClick = onSaveClick,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp)
-                    .height(56.dp),
+                    .padding(Dimens.PaddingStandard)
+                    .height(Dimens.ButtonHeightStandard),
                 colors = ButtonDefaults.buttonColors(containerColor = NeonGreen),
-                shape = RoundedCornerShape(50) // Полностью круглая
+                shape = RoundedCornerShape(Dimens.CornerRound)
             ) {
-                Text("SAVE ALL CHANGES", color = Color.Black, fontWeight = FontWeight.Bold)
+                Text(
+                    stringResource(R.string.settings_save_changes),
+                    color = Color.Black,
+                    fontWeight = FontWeight.Bold
+                )
             }
         }
     ) { padding ->
@@ -140,51 +160,62 @@ fun SettingsScreenContent(
                 .fillMaxSize()
                 .padding(padding)
                 .verticalScroll(rememberScrollState())
-                .padding(horizontal = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(24.dp)
+                .padding(horizontal = Dimens.PaddingStandard),
+            verticalArrangement = Arrangement.spacedBy(Dimens.PaddingLarge)
         ) {
             // --- Interface Section ---
-            SettingsSection(title = "INTERFACE") {
+            SettingsSection(title = stringResource(R.string.section_interface)) {
                 SettingsCard {
                     SettingsItem(
                         icon = Icons.Default.Language,
-                        title = "App Language",
-                        subtitle = "Current: ${state.currentLanguage.displayName}",
+                        title = stringResource(R.string.pref_app_language),
+                        subtitle = stringResource(
+                            R.string.pref_current_lang_format,
+                            state.currentLanguage.displayName
+                        ),
                         iconColor = NeonGreen,
                         onClick = onLanguageClick
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text(state.currentLanguage.displayName.substringBefore(" "), color = NeonGreen, fontSize = 14.sp)
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Icon(Icons.Default.ChevronRight, contentDescription = null, tint = TextSecondary)
+                            Text(
+                                state.currentLanguage.displayName.substringBefore(" "),
+                                color = NeonGreen,
+                                fontSize = Dimens.TextSizeStandard
+                            )
+                            Spacer(modifier = Modifier.width(Dimens.PaddingMedium))
+                            Icon(
+                                Icons.Default.ChevronRight,
+                                contentDescription = null,
+                                tint = TextSecondary
+                            )
                         }
                     }
                 }
             }
 
             // --- Account Section ---
-            SettingsSection(title = "ACCOUNT") {
+            SettingsSection(title = stringResource(R.string.section_account)) {
                 SettingsCard {
                     SettingsItem(
                         icon = Icons.Default.Person,
-                        title = "Personal Information",
-                        iconColor = Color(0xFF4CAF50), // Greenish
+                        title = stringResource(R.string.pref_personal_info),
+                        iconColor = SettingsIconGreen,
                         onClick = {}
                     )
-                    HorizontalDivider(color = DarkBackground, thickness = 1.dp)
+                    HorizontalDivider(color = SettingsDivider, thickness = Dimens.BorderThin)
                     SettingsItem(
                         icon = Icons.Default.Code,
-                        title = "Interview Tech Stack",
-                        iconColor = Color(0xFF4CAF50),
+                        title = stringResource(R.string.pref_tech_stack),
+                        iconColor = SettingsIconGreen,
                         onClick = {}
                     )
-                    HorizontalDivider(color = DarkBackground, thickness = 1.dp)
+                    HorizontalDivider(color = SettingsDivider, thickness = Dimens.BorderThin)
                     SettingsItem(
                         icon = Icons.AutoMirrored.Filled.ExitToApp,
-                        title = "Sign Out",
-                        iconColor = Color(0xFFE57373), // Reddish
-                        iconBgColor = Color(0xFFE57373).copy(alpha = 0.1f),
-                        textColor = Color(0xFFE57373),
+                        title = stringResource(R.string.pref_sign_out),
+                        iconColor = SettingsIconRed,
+                        iconBgColor = SettingsIconRedBg,
+                        textColor = SettingsIconRed,
                         showChevron = false,
                         onClick = {}
                     )
@@ -192,20 +223,20 @@ fun SettingsScreenContent(
             }
 
             // --- Alerts Section ---
-            SettingsSection(title = "ALERTS") {
+            SettingsSection(title = stringResource(R.string.section_alerts)) {
                 SettingsCard {
                     SettingsSwitchItem(
                         icon = Icons.Default.Notifications,
-                        title = "Interview Reminders",
-                        subtitle = "Daily practice nudges",
+                        title = stringResource(R.string.pref_reminders),
+                        subtitle = stringResource(R.string.pref_reminders_sub),
                         isChecked = state.isRemindersEnabled,
                         onCheckedChange = onReminderToggle
                     )
-                    HorizontalDivider(color = DarkBackground, thickness = 1.dp)
+                    HorizontalDivider(color = SettingsDivider, thickness = Dimens.BorderThin)
                     SettingsSwitchItem(
                         icon = Icons.Default.Lightbulb,
-                        title = "Daily Tech Tips",
-                        subtitle = "Flashcards for algorithm prep",
+                        title = stringResource(R.string.pref_tech_tips),
+                        subtitle = stringResource(R.string.pref_tech_tips_sub),
                         isChecked = state.isTechTipsEnabled,
                         onCheckedChange = onTipsToggle
                     )
@@ -213,41 +244,52 @@ fun SettingsScreenContent(
             }
 
             // --- Voice & AI Section ---
-            SettingsSection(title = "VOICE & AI") {
+            SettingsSection(title = stringResource(R.string.section_voice_ai)) {
                 SettingsCard {
                     SettingsItem(
                         icon = Icons.Default.RecordVoiceOver,
-                        title = "Interviewer Voice",
-                        subtitle = "\"Modern Tech Expert (Male)\"",
-                        iconColor = Color(0xFF4CAF50),
+                        title = stringResource(R.string.pref_interviewer_voice),
+                        subtitle = stringResource(R.string.pref_voice_sub),
+                        iconColor = SettingsIconGreen,
                         onClick = {}
                     )
-                    HorizontalDivider(color = DarkBackground, thickness = 1.dp)
-                    Column(modifier = Modifier.padding(16.dp)) {
+                    HorizontalDivider(color = SettingsDivider, thickness = Dimens.BorderThin)
+                    Column(modifier = Modifier.padding(Dimens.PaddingStandard)) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            SettingsIcon(icon = Icons.Default.Speed, color = Color(0xFF4CAF50))
-                            Spacer(modifier = Modifier.width(16.dp))
+                            SettingsIcon(icon = Icons.Default.Speed, color = SettingsIconGreen)
+                            Spacer(modifier = Modifier.width(Dimens.PaddingStandard))
                             Column(modifier = Modifier.weight(1f)) {
-                                Text("Speech Speed", color = Color.White, fontSize = 16.sp)
-                                Text("${state.speechSpeed}x", color = TextSecondary, fontSize = 12.sp)
+                                Text(
+                                    stringResource(R.string.pref_speech_speed),
+                                    color = TextPrimary,
+                                    fontSize = Dimens.TextSizeLarge
+                                )
+                                Text(
+                                    "${state.speechSpeed}x",
+                                    color = TextSecondary,
+                                    fontSize = Dimens.TextSizeSmall
+                                )
                             }
                             Text(
-                                if(state.speechSpeed == 1.0f) "Normal (1.0x)"
-                                else String.format("%.1fx", state.speechSpeed),
+                                if (state.speechSpeed == 1.0f) stringResource(R.string.pref_speed_normal)
+                                else stringResource(
+                                    R.string.pref_speed_value_format,
+                                    state.speechSpeed
+                                ),
                                 color = NeonGreen,
-                                fontSize = 12.sp
+                                fontSize = Dimens.TextSizeSmall
                             )
                         }
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(Dimens.PaddingMedium))
                         Slider(
                             value = state.speechSpeed,
                             onValueChange = onSpeedChange,
                             valueRange = 0.5f..2.0f,
-                            steps = 2, // 0.5, 1.0, 1.5, 2.0
+                            steps = Dimens.SliderSteps,
                             colors = SliderDefaults.colors(
                                 thumbColor = NeonGreen,
                                 activeTrackColor = NeonGreen,
-                                inactiveTrackColor = DarkBackground
+                                inactiveTrackColor = MaterialTheme.colorScheme.background
                             )
                         )
                     }
@@ -255,41 +297,83 @@ fun SettingsScreenContent(
             }
 
             // --- Application Section ---
-            SettingsSection(title = "APPLICATION") {
+            SettingsSection(title = stringResource(R.string.section_application)) {
                 SettingsCard {
-                    SettingsItem(icon = Icons.Default.Description, title = "Privacy Policy", iconColor = TextSecondary, onClick = {}) {
-                        Icon(Icons.AutoMirrored.Filled.ExitToApp, contentDescription = null, tint = TextSecondary, modifier = Modifier.size(16.dp))
+                    SettingsItem(
+                        icon = Icons.Default.Description,
+                        title = stringResource(R.string.pref_privacy_policy),
+                        iconColor = TextSecondary,
+                        onClick = {}) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.ExitToApp,
+                            contentDescription = null,
+                            tint = TextSecondary,
+                            modifier = Modifier.size(Dimens.SettingsEndIconSize)
+                        )
                     }
-                    HorizontalDivider(color = DarkBackground, thickness = 1.dp)
-                    SettingsItem(icon = Icons.Default.Gavel, title = "Terms of Service", iconColor = TextSecondary, onClick = {}) {
-                        Icon(Icons.AutoMirrored.Filled.ExitToApp, contentDescription = null, tint = TextSecondary, modifier = Modifier.size(16.dp))
+                    HorizontalDivider(color = SettingsDivider, thickness = Dimens.BorderThin)
+                    SettingsItem(
+                        icon = Icons.Default.Gavel,
+                        title = stringResource(R.string.pref_terms_service),
+                        iconColor = TextSecondary,
+                        onClick = {}) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.ExitToApp,
+                            contentDescription = null,
+                            tint = TextSecondary,
+                            modifier = Modifier.size(Dimens.SettingsEndIconSize)
+                        )
                     }
-                    HorizontalDivider(color = DarkBackground, thickness = 1.dp)
+                    HorizontalDivider(color = SettingsDivider, thickness = Dimens.BorderThin)
                     SettingsItem(
                         icon = Icons.Default.Info,
-                        title = "Build Version",
-                        subtitle = "Production Release ${state.appVersion}\n(Stable)",
+                        title = stringResource(R.string.pref_build_version),
+                        subtitle = stringResource(R.string.pref_build_sub_format, state.appVersion),
                         iconColor = TextSecondary,
                         onClick = {}
                     ) {
-                        Text("v${state.appVersion}", color = TextSecondary, fontSize = 12.sp)
+                        Text(
+                            stringResource(R.string.pref_version_format, state.appVersion),
+                            color = TextSecondary,
+                            fontSize = Dimens.TextSizeSmall
+                        )
                     }
                 }
             }
 
             // Footer text
-            Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Box(modifier = Modifier.size(6.dp).background(NeonGreen, CircleShape))
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text("SYSTEM READY FOR INTERVIEW", color = TextSecondary, fontSize = 10.sp, letterSpacing = 2.sp)
+                    Box(
+                        modifier = Modifier
+                            .size(Dimens.FooterDotSize)
+                            .background(NeonGreen, CircleShape)
+                    )
+                    Spacer(modifier = Modifier.width(Dimens.PaddingMedium))
+                    Text(
+                        stringResource(R.string.footer_system_ready),
+                        color = TextSecondary,
+                        fontSize = Dimens.TextSizeMicro,
+                        letterSpacing = 2.sp
+                    )
                 }
-                Spacer(modifier = Modifier.height(8.dp))
-                Text("© 2026 AI TECH INTERVIEWER. ALL RIGHTS", color = TextSecondary.copy(alpha = 0.5f), fontSize = 10.sp)
-                Text("RESERVED. CODED FOR PRECISION.", color = TextSecondary.copy(alpha = 0.5f), fontSize = 10.sp)
+                Spacer(modifier = Modifier.height(Dimens.PaddingMedium))
+                Text(
+                    stringResource(R.string.footer_copyright_1),
+                    color = TextSecondary.copy(alpha = 0.5f),
+                    fontSize = Dimens.TextSizeMicro
+                )
+                Text(
+                    stringResource(R.string.footer_copyright_2),
+                    color = TextSecondary.copy(alpha = 0.5f),
+                    fontSize = Dimens.TextSizeMicro
+                )
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(Dimens.PaddingLarge))
         }
     }
 }
