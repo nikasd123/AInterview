@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">AInterview</string>
+
+    <string name="nav_notifications">Уведомления</string>
+    <string name="nav_settings">Настройки</string>
+    <string name="new_interview">Новое интервью</string>
+
+    <string name="stat_completed">Пройдено</string>
+    <string name="stat_total_sessions">Всего сессий</string>
+    <string name="stat_top_skill">Лучший навык</string>
+    <string name="stat_most_practiced">Частая практика</string>
+
+    <string name="recent_sessions">Недавние сессии</string>
+    <string name="view_all">Все</string>
+    <string name="no_sessions_placeholder">Собеседований пока нет. Начните первое!</string>
+
+    <string name="avg_score_label">Средний балл</string>
+    <string name="out_of_100">/100</string>
+    <string name="growth_this_week">+5% ЗА НЕДЕЛЮ</string>
+    <string name="home_greeting_prefix">Готов к успеху, \n</string>
+    <string name="home_greeting_name_default">Аноним?</string>
+
+    <string name="status_passed">Сдано</string>
+    <string name="status_needs_work">Нужно подтянуть</string>
+
+    <string name="report_title">Отчет о собеседовании</string>
+    <string name="finish_review">Завершить обзор</string>
+    <string name="great_job">Отличная работа!</string>
+    <string name="total_score">Общий балл</string>
+    <string name="top_10_percent">Топ 10% кандидатов</string>
+
+    <string name="ai_feedback_title">Резюме от AI</string>
+    <string name="feedback_default">Отличная работа! Изучите детальный анализ ниже, чтобы понять, что можно улучшить.</string>
+    <string name="feedback_template">Вы показали отличные навыки в теме %1$s. Продолжайте практиковать консистентное хеширование и граничные случаи.</string>
+
+    <string name="detailed_analysis">Детальный анализ</string>
+    <string name="question_score_format">%1$d/10</string>
+
+    <string name="label_your_answer">ВАШ ОТВЕТ</string>
+    <string name="label_no_answer">Ответ не записан.</string>
+
+    <string name="label_ai_feedback">ФИДБЕК AI И ИДЕАЛЬНЫЙ ОТВЕТ</string>
+    <string name="label_no_feedback">Фидбек отсутствует.</string>
+
+    <string name="cd_back">Назад</string>
+    <string name="cd_share">Поделиться</string>
+    <string name="cd_expand_collapse">Развернуть или свернуть детали</string>
+
+    <string name="session_end">Завершить</string>
+    <string name="session_question_progress">Вопрос %1$d из %2$d</string>
+    <string name="session_percent_completed">%1$d%% Завершено</string>
+
+    <string name="session_ai_speaking">AI говорит</string>
+    <string name="session_default_hint">Учтите надежность, порядок и накладные расходы на соединение в вашем ответе.</string>
+
+    <string name="btn_repeat">Повторить</string>
+    <string name="btn_skip_reading">Пропустить чтение</string>
+    <string name="btn_stop_submit">Стоп и отправить</string>
+    <string name="cd_cancel">Отмена</string>
+
+    <string name="mic_state_listening">СЛУШАЮ</string>
+    <string name="mic_state_paused">МИКРОФОН НА ПАУЗЕ</string>
+    <string name="mic_hint_active">Говорите...</string>
+    <string name="mic_hint_paused">Нажмите, чтобы продолжить</string>
+
+    <string name="speech_placeholder_stopped">Запись остановлена. Нажмите на микрофон.</string>
+    <string name="speech_placeholder_listening">Слушаю ваш голос...</string>
+
+    <string name="feedback_strong_answer">Сильный ответ</string>
+    <string name="feedback_concepts_covered">Ключевые концепции затронуты</string>
+    <string name="btn_next_question">Следующий вопрос</string>
+
+    <string name="settings_title">НАСТРОЙКИ</string>
+    <string name="settings_save_changes">СОХРАНИТЬ ИЗМЕНЕНИЯ</string>
+
+    <string name="section_interface">ИНТЕРФЕЙС</string>
+    <string name="section_account">АККАУНТ</string>
+    <string name="section_alerts">УВЕДОМЛЕНИЯ</string>
+    <string name="section_voice_ai">ГОЛОС И AI</string>
+    <string name="section_application">ПРИЛОЖЕНИЕ</string>
+
+    <string name="pref_app_language">Язык приложения</string>
+    <string name="pref_current_lang_format">Текущий: %1$s</string>
+
+    <string name="pref_personal_info">Личная информация</string>
+    <string name="pref_tech_stack">Технологический стек</string>
+    <string name="pref_sign_out">Выйти</string>
+
+    <string name="pref_reminders">Напоминания</string>
+    <string name="pref_reminders_sub">Ежедневные напоминания о практике</string>
+    <string name="pref_tech_tips">Технические советы</string>
+    <string name="pref_tech_tips_sub">Карточки для подготовки (Алгоритмы)</string>
+
+    <string name="pref_interviewer_voice">Голос интервьюера</string>
+    <string name="pref_voice_sub">"Современный эксперт (Мужской)"</string>
+    <string name="pref_speech_speed">Скорость речи</string>
+    <string name="pref_speed_value_format">%.1fx</string>
+    <string name="pref_speed_normal">Норма (1.0x)</string>
+
+    <string name="pref_privacy_policy">Политика конфиденциальности</string>
+    <string name="pref_terms_service">Условия использования</string>
+    <string name="pref_build_version">Версия сборки</string>
+    <string name="pref_build_sub_format">Релиз %1$s\n(Stable)</string>
+    <string name="pref_version_format">v%1$s</string>
+
+    <string name="footer_system_ready">СИСТЕМА ГОТОВА К СОБЕСЕДОВАНИЮ</string>
+    <string name="footer_copyright_1">© 2026 AI TECH INTERVIEWER. ВСЕ ПРАВА</string>
+    <string name="footer_copyright_2">ЗАЩИЩЕНЫ. КОД ВЫСОКОЙ ТОЧНОСТИ.</string>
+
+    <string name="setup_title">Настройка интервью</string>
+    <string name="setup_description">Настройте параметры сессии. Выберите стек, уровень сложности и длительность, чтобы начать.</string>
+
+    <string name="section_topic">Выберите тему</string>
+    <string name="section_difficulty">Уровень сложности</string>
+    <string name="section_question_count">Количество вопросов</string>
+
+    <string name="est_time_format">ВРЕМЯ: %1$d МИН</string>
+    <string name="btn_start_interview">НАЧАТЬ ИНТЕРВЬЮ</string>
+
+    <string name="duration_quick">Быстро</string>
+    <string name="duration_short">Коротко</string>
+    <string name="duration_standard">Стандарт</string>
+    <string name="duration_extended">Расширенно</string>
+
+    <string name="cd_start_arrow">Стрелка старта</string>
+</resources>
