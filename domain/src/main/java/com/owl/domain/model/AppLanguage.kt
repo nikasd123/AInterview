@@ -11,7 +11,13 @@ enum class AppLanguage(
     RUSSIAN("ru", "Russian", Locale("ru", "RU"));
 
     companion object {
-        fun fromCode(code: String): AppLanguage =
+        fun fromCode(code: String?): AppLanguage =
             entries.find { it.code == code } ?: ENGLISH
+
+        fun getSystemDefault(): AppLanguage {
+            val systemLang = Locale.getDefault().language
+            return if (systemLang == "ru") RUSSIAN else ENGLISH
+        }
     }
+
 }

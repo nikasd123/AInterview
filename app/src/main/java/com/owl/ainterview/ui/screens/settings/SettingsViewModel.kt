@@ -1,5 +1,7 @@
 package com.owl.ainterview.ui.screens.settings
 
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.owl.domain.model.AppLanguage
@@ -25,6 +27,9 @@ class SettingsViewModel(
     fun onLanguageSelected(language: AppLanguage) {
         viewModelScope.launch {
             setAppLanguageUseCase(language)
+
+            val localeList = LocaleListCompat.forLanguageTags(language.code)
+            AppCompatDelegate.setApplicationLocales(localeList)
         }
     }
 }

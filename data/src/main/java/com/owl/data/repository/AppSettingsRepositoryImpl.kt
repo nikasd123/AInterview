@@ -14,13 +14,21 @@ class AppSettingsRepositoryImpl(
 
     override fun getLanguage(): Flow<AppLanguage> {
         return dao.getSettings().map { entity ->
-            AppLanguage.fromCode(entity?.languageCode ?: AppLanguage.ENGLISH.code)
+            if (entity != null) {
+                AppLanguage.fromCode(entity.languageCode)
+            } else {
+                AppLanguage.getSystemDefault()
+            }
         }
     }
 
     override suspend fun getCurrentLanguage(): AppLanguage {
         val entity = dao.getSettings().firstOrNull()
-        return AppLanguage.fromCode(entity?.languageCode ?: AppLanguage.ENGLISH.code)
+        return if (entity != null) {
+            AppLanguage.fromCode(entity.languageCode)
+        } else {
+            AppLanguage.getSystemDefault()
+        }
     }
 
     override suspend fun setLanguage(language: AppLanguage) {
