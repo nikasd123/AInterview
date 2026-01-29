@@ -1,5 +1,6 @@
 package com.owl.ainterview.di
 
+import com.owl.ainterview.MainViewModel
 import com.owl.ainterview.ui.screens.home.HomeViewModel
 import com.owl.ainterview.ui.screens.report.ReportViewModel
 import com.owl.ainterview.ui.screens.session.SessionViewModel
@@ -24,6 +25,7 @@ val appModule = module {
     }
     viewModel { SettingsViewModel(
         getAppLanguageUseCase = get(),
-        setAppLanguageUseCase = get()
+        languageController = get()
     ) }
+    viewModel { MainViewModel(languageController = get()) }
 }

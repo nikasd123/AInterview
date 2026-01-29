@@ -2,12 +2,14 @@ package com.owl.data.di
 
 import androidx.room.Room
 import com.data.owl.ainterview.BuildConfig
+import com.owl.data.controller.LanguageControllerImpl
 import com.owl.data.db.AppDatabase
 import com.owl.data.repository.AppSettingsRepositoryImpl
 import com.owl.data.repository.SessionRepositoryImpl
 import com.owl.data.service.AiInterviewerServiceImpl
 import com.owl.data.service.SpeechServiceImpl
 import com.owl.data.service.TtsServiceImpl
+import com.owl.domain.controller.LanguageController
 import com.owl.domain.port.repository.AppSettingsRepository
 import com.owl.domain.port.repository.SessionRepository
 import com.owl.domain.port.service.AiInterviewerService
@@ -49,4 +51,8 @@ val dataModule = module {
     // Repositories
     single<SessionRepository> { SessionRepositoryImpl(dao = get()) }
     single<AppSettingsRepository> { AppSettingsRepositoryImpl(dao = get()) }
+
+    single<LanguageController> {
+        LanguageControllerImpl(repository = get())
+    }
 }
