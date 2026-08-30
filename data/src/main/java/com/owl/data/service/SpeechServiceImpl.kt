@@ -92,7 +92,8 @@ class SpeechServiceImpl(
                 val intent = createIntent(language)
                 speechRecognizer?.startListening(intent)
             } catch (e: Exception) {
-                _speechState.value = SpeechState.Error("Start failed: ${e.message}")
+                Log.e("SpeechService", "Start failed", e)
+                _speechState.value = SpeechState.Error("Failed to start listening.")
             }
         }
     }
