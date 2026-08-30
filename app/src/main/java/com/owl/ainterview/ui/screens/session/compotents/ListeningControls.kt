@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
@@ -23,6 +24,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Mic
+import androidx.compose.material.icons.filled.MicOff
+import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -42,6 +46,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -97,8 +102,10 @@ fun ListeningControls(
         Text(
             text = if (isMicActive) stringResource(R.string.mic_hint_active) else stringResource(R.string.mic_hint_paused),
             color = TextPrimary,
-            fontSize = Dimens.TextSizeDisplay, // 24.sp
-            fontWeight = FontWeight.Bold
+            fontSize = Dimens.TextSizeDisplay,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth()
         )
 
         Spacer(modifier = Modifier.height(Dimens.SpacerLarge))
@@ -149,7 +156,7 @@ fun ListeningControls(
                 contentPadding = PaddingValues(0.dp)
             ) {
                 Icon(
-                    imageVector = if (isMicActive) Icons.Default.Check else Icons.Default.Call, // Call или Mic
+                    imageVector = if (isMicActive) Icons.Default.Check else Icons.Default.MicOff,
                     contentDescription = null,
                     tint = if (isMicActive) Color.Black else TextPrimary,
                     modifier = Modifier.size(Dimens.MicIconSize)
@@ -174,7 +181,7 @@ fun ListeningControls(
                 colors = ButtonDefaults.buttonColors(containerColor = TextPrimary),
                 shape = RoundedCornerShape(Dimens.CornerRound)
             ) {
-                Icon(Icons.Default.Check, contentDescription = null, tint = Color.Black)
+                Icon(Icons.Default.Stop, contentDescription = null, tint = Color.Black)
                 Spacer(modifier = Modifier.width(Dimens.PaddingMedium))
                 Text(stringResource(R.string.btn_stop_submit), color = Color.Black)
             }

@@ -24,43 +24,35 @@ class SpeechServiceImpl(
 
     private var speechRecognizer: SpeechRecognizer? = null
 
-    // Интент выносим в геттер или создаем каждый раз, чтобы быть уверенными в флагах
-    private val speechIntent get() = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
-        putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
-        putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
-        putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1)
+    private fun createIntent(languageCode: String): Intent {
+        return Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+            putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
+            putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1)
+
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE, languageCode)
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, languageCode)
+            putExtra(RecognizerIntent.EXTRA_ONLY_RETURN_LANGUAGE_PREFERENCE, languageCode)
+        }
     }
 
     private val recognitionListener = object : RecognitionListener {
         override fun onReadyForSpeech(params: Bundle?) {
-            // Рекогнайзер готов и ждет голоса
             _speechState.value = SpeechState.Listening
         }
 
         override fun onBeginningOfSpeech() {
-            // Юзер начал говорить
             _speechState.value = SpeechState.Speaking("")
         }
 
         override fun onRmsChanged(rmsdB: Float) {}
         override fun onBufferReceived(buffer: ByteArray?) {}
-        override fun onEndOfSpeech() {
-            // Речь закончилась, но результаты еще обрабатываются
-            // Важно не слать Error здесь, ждем onResults
-        }
+        override fun onEndOfSpeech() {  }
 
         override fun onError(error: Int) {
-            // Игнорируем ошибку "No match" если она прилетает слишком рано,
-            // но для простоты прокидываем всё, а VM решит
             val errorMessage = mapError(error)
-
-            // Важно: если ошибка "Client side error" (5) или "Busy" (8),
-            // это часто значит рассинхрон.
-            Log.e("SpeechService", "Error: $error - $errorMessage")
-
             _speechState.value = SpeechState.Error(errorMessage)
 
-            // Сбрасываем рекогнайзер
             cleanup()
         }
 
@@ -86,23 +78,18 @@ class SpeechServiceImpl(
         override fun onEvent(eventType: Int, params: Bundle?) {}
     }
 
-    override suspend fun startListening(languageCode: String) {
+    override suspend fun startListening(language: String) {
         withContext(Dispatchers.Main) {
-            // 1. Сбрасываем старый стейт, чтобы UI не реагировал на прошлые ошибки
-            _speechState.value = SpeechState.Listening
-
-            // 2. ЖЕСТКО убиваем старый рекогнайзер.
-            // Это решает проблему "включается и сразу выключается" (ERROR_BUSY)
             cleanup()
 
-            // 3. Создаем новый экземпляр
+            _speechState.value = SpeechState.Listening
+
             speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context)
             speechRecognizer?.setRecognitionListener(recognitionListener)
 
-            val intent = speechIntent
-            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, languageCode)
-
             try {
+                // Создаем новый интент с нужным языком
+                val intent = createIntent(language)
                 speechRecognizer?.startListening(intent)
             } catch (e: Exception) {
                 _speechState.value = SpeechState.Error("Start failed: ${e.message}")
@@ -113,10 +100,9 @@ class SpeechServiceImpl(
     override suspend fun stopListening() {
         withContext(Dispatchers.Main) {
             try {
-                // Просто просим остановить запись, результаты придут в onResults
                 speechRecognizer?.stopListening()
             } catch (e: Exception) {
-                Log.e("SpeechService", "Stop failed: $e")
+                // ignore
             }
         }
     }
@@ -124,9 +110,7 @@ class SpeechServiceImpl(
     override fun cleanup() {
         try {
             speechRecognizer?.destroy()
-        } catch (e: Exception) {
-            // ignore
-        }
+        } catch (e: Exception) { }
         speechRecognizer = null
     }
 

@@ -33,6 +33,7 @@ class SessionViewModel(
     internal val sessionId: String = checkNotNull(savedStateHandle["sessionId"])
     private var sessionLanguage: AppLanguage = AppLanguage.ENGLISH
     private var session: InterviewSession? = null
+    private var accumulatedText: String = ""
     private var timerJob: Job? = null
 
     init {
@@ -113,27 +114,59 @@ class SessionViewModel(
     // --- 3. STT Logic (User Voice) ---
 
     private fun startListening() = intent {
-        reduce { state.copy(step = SessionStep.LISTENING, partialAnswer = "", isMicEnabled = true) }
-        speechService.startListening(language = sessionLanguage.locale.toLanguageTag())
+        if (!state.isMicEnabled) {
+            accumulatedText = ""
+        }
+
+        reduce {
+            state.copy(
+                step = SessionStep.LISTENING,
+                partialAnswer = accumulatedText,
+                isMicEnabled = true
+            )
+        }
+
+        val langTag = sessionLanguage.locale.toLanguageTag()
+        speechService.startListening(language = langTag)
     }
 
     fun onStopRecording() = intent {
         speechService.stopListening()
+        reduce { state.copy(isMicEnabled = false) }
+
+        submitAnswer(accumulatedText)
     }
 
     private fun observeSpeech() {
         viewModelScope.launch {
             speechService.speechState.collectLatest { speechState ->
                 intent {
-                    if (state.step != SessionStep.LISTENING) return@intent
+                    if (!state.isMicEnabled) return@intent
 
+                    //TODO СДЕЛАТЬ ОСТАНОВКУ ПО НАЖАТИЮ НА STOP&SUBMIT А НЕ ПО ВЫКЛЮЧЕНИЮ МИКРОФОНА
                     when (speechState) {
                         is SpeechState.Speaking -> {
-                            reduce { state.copy(partialAnswer = speechState.partialText, isMicEnabled = true) }
+                            val currentPhrase = speechState.partialText
+                            val fullDisplay = if (accumulatedText.isBlank()) currentPhrase else "$accumulatedText $currentPhrase"
+
+                            reduce { state.copy(partialAnswer = fullDisplay) }
                         }
-                        is SpeechState.Result -> { submitAnswer(speechState.text) }
+
+                        is SpeechState.Result -> {
+                            val newPart = speechState.text
+                            accumulatedText = if (accumulatedText.isBlank()) newPart else "$accumulatedText $newPart"
+                            reduce { state.copy(partialAnswer = accumulatedText) }
+
+                            val langTag = sessionLanguage.locale.toLanguageTag()
+                            speechService.startListening(langTag)
+                        }
+
                         is SpeechState.Error -> {
-                            reduce { state.copy(isMicEnabled = false) }
+                            delay(500)
+                            if (state.isMicEnabled) {
+                                val langTag = sessionLanguage.locale.toLanguageTag()
+                                speechService.startListening(langTag)
+                            }
                         }
                         else -> Unit
                     }
@@ -150,9 +183,7 @@ class SessionViewModel(
 
         reduce { state.copy(step = SessionStep.PROCESSING, partialAnswer = answerText) }
 
-        val result = processAnswerUseCase(currentSess, question, answerText)
-
-        when (result) {
+        when (val result = processAnswerUseCase(currentSess, question, answerText)) {
             is Resource.Success -> {
                 val (updatedSession, evaluatedQuestion) = result.data
                 session = updatedSession
@@ -206,6 +237,7 @@ class SessionViewModel(
 
     fun onCancelRecording() = intent {
         speechService.stopListening()
+        accumulatedText = ""
         reduce { state.copy(partialAnswer = "") }
 
         delay(300)

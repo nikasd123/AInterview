@@ -18,9 +18,7 @@ class ProcessAnswerUseCase(
         userAnswer: String
     ): Resource<Pair<InterviewSession, Question>> {
         val language = getCurrentLanguageUseCase()
-        val result = aiService.evaluateAnswer(question, userAnswer, language)
-
-        return when (result) {
+        return when (val result = aiService.evaluateAnswer(question, userAnswer, language)) {
             is Resource.Success -> {
                 val evaluatedQuestion = result.data
 
