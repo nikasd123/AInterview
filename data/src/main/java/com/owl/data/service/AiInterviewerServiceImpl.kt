@@ -63,8 +63,6 @@ class AiInterviewerServiceImpl(
                 val response = generativeModel.generateContent(prompt)
                 val responseText = response.text ?: return@withContext Resource.Error("Empty response from AI")
 
-                Log.d("GeminiResp", "Raw Response:\n$responseText")
-
                 val cleanJson = responseText
                     .replace("```json", "")
                     .replace("```", "")
@@ -84,7 +82,7 @@ class AiInterviewerServiceImpl(
                 Resource.Success(questions)
             } catch (e: Exception) {
                 Log.e("GeminiResp", "Error parsing JSON", e)
-                Resource.Error("Failed to generate questions: ${e.localizedMessage}", e)
+                Resource.Error("Failed to generate questions. Please try again.")
             }
         }
 
@@ -132,7 +130,8 @@ class AiInterviewerServiceImpl(
 
                 Resource.Success(ratedQuestion)
             } catch (e: Exception) {
-                Resource.Error("Failed to evaluate answer: ${e.message}", e)
+                Log.e("GeminiResp", "Error evaluating answer", e)
+                Resource.Error("Failed to evaluate answer. Please try again.")
             }
         }
 }
