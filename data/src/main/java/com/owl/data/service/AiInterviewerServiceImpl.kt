@@ -81,7 +81,7 @@ class AiInterviewerServiceImpl(
 
                 Resource.Success(questions)
             } catch (e: Exception) {
-                Log.e("GeminiResp", "Error parsing JSON", e)
+                Log.e("GeminiResp", "Error parsing JSON")
                 Resource.Error("Failed to generate questions. Please try again.")
             }
         }
@@ -130,7 +130,7 @@ class AiInterviewerServiceImpl(
 
                 Resource.Success(ratedQuestion)
             } catch (e: Exception) {
-                Log.e("GeminiResp", "Error evaluating answer", e)
+                Log.e("GeminiResp", "Error evaluating answer")
                 Resource.Error("Failed to evaluate answer. Please try again.")
             }
         }
