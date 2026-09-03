@@ -3,6 +3,7 @@ package com.owl.data.db.converters
 import androidx.room.TypeConverter
 import com.owl.data.network.model.InterviewSettingsDto
 import com.owl.data.network.model.QuestionDto
+import android.util.Log
 import com.owl.data.network.model.toDomain
 import com.owl.data.network.model.toDto
 import com.owl.domain.model.InterviewSettings
@@ -29,7 +30,7 @@ class RoomConverters {
             val dtos = json.decodeFromString<List<QuestionDto>>(value)
             dtos.map { it.toDomain() }
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.e("RoomConverters", "Failed to deserialize questions list")
             emptyList()
         }
     }
