@@ -7,3 +7,7 @@
 **Vulnerability:** The application was configured with `android:allowBackup="true"` in the AndroidManifest.xml. This allows an attacker with physical access or an ADB connection to extract sensitive data from the app's internal storage via `adb backup`.
 **Learning:** Default configurations in Android often prioritize convenience over security. Enabling auto-backup by default without explicitly configuring what is backed up can lead to data leakage.
 **Prevention:** Always explicitly set `android:allowBackup="false"` unless automated backups are specifically required and explicitly configured to exclude sensitive data via `android:fullBackupContent` and `android:dataExtractionRules`.
+## 2026-10-25 - Information Exposure Through Logcat and Error Streams
+**Vulnerability:** Raw exceptions were being logged to the console using `e.printStackTrace()` or directly passed to `android.util.Log.e("tag", "msg", e)` in data services, as well as being wrapped into `IllegalStateException` throwing unhandled exceptions. This exposes internal stack traces, system paths, and API error details to Logcat.
+**Learning:** While logging stack traces can be helpful for debugging, it is a bad practice for security in production as it leaks internal application structure and potentially sensitive snippets.
+**Prevention:** Always log sanitized error messages and handle errors securely without exposing the raw `Exception` object, especially in cases where `allowBackup` is no longer the only concern. Use generic messages for user feedback or logs.
