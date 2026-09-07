@@ -29,7 +29,7 @@ class RoomConverters {
             val dtos = json.decodeFromString<List<QuestionDto>>(value)
             dtos.map { it.toDomain() }
         } catch (e: Exception) {
-            e.printStackTrace()
+            android.util.Log.e("RoomConverters", "Failed to deserialize questions list")
             emptyList()
         }
     }
@@ -45,7 +45,7 @@ class RoomConverters {
         return try {
             json.decodeFromString<InterviewSettingsDto>(value).toDomain()
         } catch (e: Exception) {
-            throw IllegalStateException("Corrupted settings in DB", e)
+            throw IllegalStateException("Corrupted settings in DB")
         }
     }
 
