@@ -29,7 +29,6 @@ class RoomConverters {
             val dtos = json.decodeFromString<List<QuestionDto>>(value)
             dtos.map { it.toDomain() }
         } catch (e: Exception) {
-            e.printStackTrace()
             emptyList()
         }
     }
@@ -45,7 +44,7 @@ class RoomConverters {
         return try {
             json.decodeFromString<InterviewSettingsDto>(value).toDomain()
         } catch (e: Exception) {
-            throw IllegalStateException("Corrupted settings in DB", e)
+            throw IllegalStateException("Corrupted settings in DB")
         }
     }
 
